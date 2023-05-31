@@ -1,0 +1,420 @@
+name: 415-hha_cbr/cbr-platform
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+  - cron: 30 0 * * *
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  HUB_REPO_BACKEND: hopehealthaction_cbr_backend
+  HUB_REPO_FRONTEND: hopehealthaction_cbr_revproxy_frontend
+  HUB_TOKEN: "${{ secrets.HUB_TOKEN }}"
+  HUB_USER: drbfraser
+jobs:
+  build-info:
+    runs-on:
+      - self-hosted
+      - docker
+    container:
+      image: alpine:latest
+    if: ${{ github.event_name }} != "push"
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo "This task give the CI/CD pipeline something to (almost always) run."
+    - run: echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+    - run: echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+    - run: echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+  build-common:
+    runs-on:
+      - self-hosted
+      - docker
+    container:
+      image: node:14
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         (always() && ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: npm install -g npm@$NPM_VERSION
+    - run: cd common
+    - run: npm ci
+    - run: npx prettier --check .
+    - run: npx tsc
+  build-mobile:
+    runs-on:
+      - self-hosted
+      - docker
+    container:
+      image: node:14
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         (always() && ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: npm install -g npm@$NPM_VERSION
+    - run: cd mobile
+    - run: npm uninstall @cbr/common
+    - run: COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
+    - run: npm install $COMMON_PACK_NAME
+    - run: npm ci
+    - run: npx prettier --check .
+    - run: npm run build dev
+  build-web:
+    runs-on:
+      - self-hosted
+      - docker
+    container:
+      image: node:14
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         (always() && ${{ github.event.pull_request.number }} != null) || (always() && ${{ github.ref }} == $DEV_BRANCH || ${{ github.ref }} == $STG_BRANCH || ${{ github.ref }} == $PROD_BRANCH) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: npm install -g npm@$NPM_VERSION
+    - run: cd common
+    - run: npm ci
+    - run: cd ../web
+    - run: npm ci
+    - run: npx prettier --check .
+    - run: GENERATE_SOURCEMAP=false npm run build
+    - run: cd web/build && tar -czvf ../../web_build.tar.gz .
+      if: always()
+    - uses: actions/upload-artifact@v3.1.1
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 7
+        path: web_build.tar.gz
+  build-server:
+    runs-on:
+      - self-hosted
+      - docker
+    container:
+      image: python:3.9.1-buster
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         (always() && ${{ github.event.pull_request.number }} != null) || (always() && ${{ github.ref }} == $DEV_BRANCH || ${{ github.ref }} == $STG_BRANCH || ${{ github.ref }} == $PROD_BRANCH) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    services:
+      test_postgres:
+        image: postgres:13.1-alpine
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+      DOMAIN: example.com
+      SECRET_KEY: test
+      POSTGRES_DB: cbr
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_HOST: test_postgres
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: cd server
+    - run: pip install -r requirements.txt
+    - run: python -m black --check .
+    - run: python manage.py check
+    - run: python manage.py makemigrations --check
+    - run: python manage.py test
+  build-docker-publish-docker-images:
+    needs:
+    - build-info
+    - build-common
+    - build-mobile
+    - build-web
+    - build-server
+    runs-on:
+      - self-hosted
+      - deploy-dockerhub-shell
+    if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - uses: actions/download-artifact@v3.0.1
+    - run: export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
+    - run: echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
+    - run: echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
+    - run: echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
+    - run: docker images
+    - run: docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
+    - run: docker images
+    - run: docker login -u $HUB_USER -p $HUB_TOKEN
+    - run: docker push $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
+    - run: docker push $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
+    - run: docker logout
+    - run: docker images -a | grep -e "$HUB_REPO_BACKEND" -e "$HUB_REPO_FRONTEND" | awk '{print $3}' | xargs docker rmi --force
+    - run: docker images
+  test-common:
+    needs: build common
+    runs-on:
+      - self-hosted
+      - docker
+    container:
+      image: node:14
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         (always() && ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - uses: actions/download-artifact@v3.0.1
+    - run: npm install -g npm@$NPM_VERSION
+    - run: cd common
+    - run: npm ci
+    - run: npm run test-ci
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+#     # 'artifacts.cobertura' was not transformed because there is no suitable equivalent in GitHub Actions
+  test-caddy:
+    needs: build-docker-publish-docker-images
+    runs-on:
+      - self-hosted
+      - docker
+    container:
+      image: caddy:2.4.6
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         (always() && ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+      DOMAIN: example.com
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - uses: actions/download-artifact@v3.0.1
+    - run: caddy validate --config caddy/Caddyfile
+  deploy-development:
+    needs:
+    - test-common
+    - test-caddy
+    runs-on:
+      - self-hosted
+      - deploy-development
+    if: ${{ github.ref }} == $DEV_BRANCH
+    environment:
+      name: development
+      url: https://cbr-dev.cmpt.sfu.ca
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+      BRANCH_TAG: dev
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - uses: actions/download-artifact@v3.0.1
+    - run:
+      - export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
+      - echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
+      - echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
+      - echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
+      - docker images
+    - run: cp /var/cbr/.env ./.env
+    - run: docker compose -f docker-compose.yml -f docker-compose.deploy.yml pull
+    - run: docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+    - run: docker image prune -f
+    - run: bash -c 'sleep 15'
+    - run: docker exec cbr_django python manage.py migrate
+    - run: docker images
+    - run: docker ps -a
+    - run: docker volume ls
+    - run:
+      - export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
+      - echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
+      - echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
+      - echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
+      - docker images
+    - run: echo "Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'"
+    - run: |
+        echo "If you get 'Error response from daemon - manifest for ... not found - manifest unknown - manifest unknown'"
+        echo "   it likely means the pipeline did not build and deploy a docker image for this commit."
+        echo "   Was there a MR to this branch that did not get build for use on Dev server?"
+    - run: echo "Downloading image = $HUB_USER/$HUB_REPO_BACKEND, tag = $IMAGE_TAG'..."
+    - run: docker pull $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
+    - run: docker pull $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
+    - run: docker tag $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG   $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG
+    - run: docker tag $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG  $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG
+    - run: docker images
+    - run: docker login -u $HUB_USER -p $HUB_TOKEN
+    - run: docker push $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG
+    - run: docker push $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG
+    - run: docker logout
+    - run: docker rmi $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG || true
+    - run: docker images
+  deploy-staging:
+    needs:
+    - test-common
+    - test-caddy
+    runs-on:
+      - self-hosted
+      - deploy-staging
+    if: ${{ github.ref }} == $STG_BRANCH
+    environment:
+      name: staging
+      url: https://cbr-stg.cmpt.sfu.ca
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+      BRANCH_TAG: staging
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - uses: actions/download-artifact@v3.0.1
+    - run:
+      - export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
+      - echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
+      - echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
+      - echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
+      - docker images
+    - run: cp /var/cbr/.env ./.env
+    - run: docker compose -f docker-compose.yml -f docker-compose.deploy.yml pull
+    - run: docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+    - run: docker image prune -f
+    - run: bash -c 'sleep 15'
+    - run: docker exec cbr_django python manage.py migrate
+    - run: docker images
+    - run: docker ps -a
+    - run: docker volume ls
+    - run:
+      - export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
+      - echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
+      - echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
+      - echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
+      - docker images
+    - run: echo "Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'"
+    - run: |
+        echo "If you get 'Error response from daemon - manifest for ... not found - manifest unknown - manifest unknown'"
+        echo "   it likely means the pipeline did not build and deploy a docker image for this commit."
+        echo "   Was there a MR to this branch that did not get build for use on Dev server?"
+    - run: echo "Downloading image = $HUB_USER/$HUB_REPO_BACKEND, tag = $IMAGE_TAG'..."
+    - run: docker pull $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
+    - run: docker pull $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
+    - run: docker tag $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG   $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG
+    - run: docker tag $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG  $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG
+    - run: docker images
+    - run: docker login -u $HUB_USER -p $HUB_TOKEN
+    - run: docker push $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG
+    - run: docker push $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG
+    - run: docker logout
+    - run: docker rmi $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG || true
+    - run: docker images
+  deploy-production:
+    needs:
+    - test-common
+    - test-caddy
+    runs-on:
+      - self-hosted
+      - deploy-dockerhub-shell
+    if: ${{ github.ref }} == $PROD_BRANCH
+    timeout-minutes: 60
+    env:
+      DEV_BRANCH: main
+      STG_BRANCH: staging
+      PROD_BRANCH: production
+      NPM_VERSION: 7.19.0
+      BRANCH_TAG: prod
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - uses: actions/download-artifact@v3.0.1
+    - run:
+      - export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
+      - echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
+      - echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
+      - echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
+      - docker images
+    - run: echo "Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'"
+    - run: |
+        echo "If you get 'Error response from daemon - manifest for ... not found - manifest unknown - manifest unknown'"
+        echo "   it likely means the pipeline did not build and deploy a docker image for this commit."
+        echo "   Was there a MR to this branch that did not get build for use on Dev server?"
+    - run: echo "Downloading image = $HUB_USER/$HUB_REPO_BACKEND, tag = $IMAGE_TAG'..."
+    - run: docker pull $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
+    - run: docker pull $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
+    - run: docker tag $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG   $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG
+    - run: docker tag $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG  $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG
+    - run: docker images
+    - run: docker login -u $HUB_USER -p $HUB_TOKEN
+    - run: docker push $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG
+    - run: docker push $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG
+    - run: docker logout
+    - run: docker rmi $HUB_USER/$HUB_REPO_BACKEND:$BRANCH_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_FRONTEND:$BRANCH_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG || true
+    - run: docker rmi $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG || true
+    - run: docker images
