@@ -1,0 +1,28 @@
+name: export_image_tag
+
+on:
+  workflow_call:
+    inputs:
+      config-path:
+        required: false
+        type: string
+    secrets:
+      envPAT:
+        required: false
+env:
+  HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
+  HUB_REPO_FRONTEND: "${{ secrets.HUB_REPO_FRONTEND }}"
+  HUB_TOKEN: "${{ secrets.HUB_TOKEN }}"
+  HUB_USER: "${{ secrets.HUB_USER }}"
+jobs:
+  export_image_tag:
+    runs-on: [self-hosted, deploy-dockerhub-shell]
+    steps:
+    - run: |
+        export IMAGE_TAG=v$(git show -s --format=%cs $CI_COMMIT_SHA).`git rev-parse --short=8 $CI_COMMIT_SHA`
+        echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
+        echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
+        echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
+        docker images
+
+
