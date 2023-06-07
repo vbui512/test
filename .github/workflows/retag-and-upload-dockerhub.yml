@@ -17,6 +17,8 @@ env:
 jobs:
   call-export-image:
     uses: vbui512/test/.github/workflows/export-image-tag.yml@b5cd22688a0294a86f425943b453d7a7b544375f
+    with:
+      config-path: '${{ inputs.config-path }}'
   retag-and-upload-dockerhub:
     runs-on: [self-hosted, '${{ inputs.config-path }}']
     steps:
