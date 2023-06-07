@@ -1,0 +1,34 @@
+name: deploy-from-dockerhub
+
+on:
+  workflow_call:
+    inputs:
+      config-path:
+        required: true
+        type: string
+    secrets:
+      envPAT:
+        required: false
+env:
+  HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
+  HUB_REPO_FRONTEND: "${{ secrets.HUB_REPO_FRONTEND }}"
+  HUB_TOKEN: "${{ secrets.HUB_TOKEN }}"
+  HUB_USER: "${{ secrets.HUB_USER }}"
+jobs:
+  call-export-image:
+    uses: vbui512/test/.github/workflows/export-image-tag.yml@b5cd22688a0294a86f425943b453d7a7b544375f
+    with:
+      config-path: '${{ inputs.config-path }}'
+  deploy-from-dockerhub:
+    runs-on: [self-hosted, '${{ inputs.config-path }}']
+    steps:
+    -  run: |
+        cp /var/cbr/.env ./.env
+        docker compose -f docker-compose.yml -f docker-compose.deploy.yml pull
+        docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+        docker image prune -f
+        bash -c 'sleep 15'
+        docker exec cbr_django python manage.py migrate
+        docker images
+        docker ps -a
+        docker volume ls
