@@ -1,0 +1,132 @@
+[2023-06-07 00:17:30Z INFO HostContext] No proxy settings were found based on environmental variables (http_proxy/https_proxy/HTTP_PROXY/HTTPS_PROXY)
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO HostContext] Well known config file 'Credentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO HostContext] Well known config file 'Runner': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.runner'
+[2023-06-07 00:17:30Z INFO Listener] Runner is built for Windows (X64) - win-x64.
+[2023-06-07 00:17:30Z INFO Listener] RuntimeInformation: Microsoft Windows 10.0.19045.
+[2023-06-07 00:17:30Z INFO Listener] Version: 2.304.0
+[2023-06-07 00:17:30Z INFO Listener] Commit: 9ef4121b5b31ee5c03b7770288213d741081f747
+[2023-06-07 00:17:30Z INFO Listener] Culture: en-CA
+[2023-06-07 00:17:30Z INFO Listener] UI Culture: en-US
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO Listener] Validating directory permissions for: 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO CommandLineParser] Parse
+[2023-06-07 00:17:30Z INFO CommandLineParser] Parsing 1 args
+[2023-06-07 00:17:30Z INFO CommandLineParser] parsing argument
+[2023-06-07 00:17:30Z INFO CommandLineParser] HasArgs: False
+[2023-06-07 00:17:30Z INFO CommandLineParser] Adding Command: run
+[2023-06-07 00:17:30Z INFO Listener] Arguments parsed
+[2023-06-07 00:17:30Z INFO Runner] ExecuteCommand
+[2023-06-07 00:17:30Z INFO ConfigurationStore] currentAssemblyLocation: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin\Runner.Listener.dll
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO ConfigurationStore] binPath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO ConfigurationStore] RootFolder: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO HostContext] Well known config file 'Runner': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.runner'
+[2023-06-07 00:17:30Z INFO ConfigurationStore] ConfigFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.runner
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO HostContext] Well known config file 'Credentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials'
+[2023-06-07 00:17:30Z INFO ConfigurationStore] CredFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO HostContext] Well known config file 'MigratedCredentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials_migrated'
+[2023-06-07 00:17:30Z INFO ConfigurationStore] MigratedCredFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials_migrated
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO HostContext] Well known config file 'Service': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.service'
+[2023-06-07 00:17:30Z INFO ConfigurationStore] ServiceConfigFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.service
+[2023-06-07 00:17:30Z INFO CommandSettings] Flag 'help': 'False'
+[2023-06-07 00:17:30Z INFO CommandSettings] Flag 'version': 'False'
+[2023-06-07 00:17:30Z INFO CommandSettings] Flag 'commit': 'False'
+[2023-06-07 00:17:30Z INFO CommandSettings] Flag 'check': 'False'
+[2023-06-07 00:17:30Z INFO CommandSettings] Command 'configure': 'False'
+[2023-06-07 00:17:30Z INFO CommandSettings] Command 'remove': 'False'
+[2023-06-07 00:17:30Z INFO CommandSettings] Command 'warmup': 'False'
+[2023-06-07 00:17:30Z INFO ConfigurationManager] LoadSettings
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsConfigured()
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsConfigured: True
+[2023-06-07 00:17:30Z INFO ConfigurationManager] Is configured: True
+[2023-06-07 00:17:30Z INFO ConfigurationStore] Read setting file: 295 chars
+[2023-06-07 00:17:30Z INFO ConfigurationManager] Settings Loaded
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsServiceConfigured()
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsServiceConfigured: True
+[2023-06-07 00:17:30Z INFO CommandSettings] Command 'run': 'True'
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsConfigured()
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsConfigured: True
+[2023-06-07 00:17:30Z INFO ConfigurationManager] Is configured: True
+[2023-06-07 00:17:30Z INFO Runner] Try determine runner startup type base on console redirects.
+[2023-06-07 00:17:30Z INFO Runner] Set runner startup type - Manual
+[2023-06-07 00:17:30Z INFO CommandSettings] Flag 'once': 'False'
+[2023-06-07 00:17:30Z INFO CommandSettings] Flag 'once': 'False'
+[2023-06-07 00:17:30Z INFO Runner] RunAsync
+[2023-06-07 00:17:30Z INFO ConfigurationManager] LoadSettings
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsConfigured()
+[2023-06-07 00:17:30Z INFO ConfigurationStore] IsConfigured: True
+[2023-06-07 00:17:30Z INFO ConfigurationManager] Is configured: True
+[2023-06-07 00:17:30Z INFO ConfigurationManager] Settings Loaded
+[2023-06-07 00:17:30Z INFO MessageListener] {
+  "AgentId": 6,
+  "AgentName": "deploy-development",
+  "PoolId": 1,
+  "PoolName": "Default",
+  "ServerUrl": "https://pipelines.actions.githubusercontent.com/VnbK8H00lfeMmbZBD2xykc3DOeYGA6vE0rfla2aE5ELQAWnLMg",
+  "GitHubUrl": "https://github.com/vbui512/test",
+  "WorkFolder": "_work"
+}
+[2023-06-07 00:17:30Z INFO MessageListener] Loading Credentials
+[2023-06-07 00:17:30Z INFO ConfigurationStore] HasCredentials()
+[2023-06-07 00:17:30Z INFO ConfigurationStore] stored True
+[2023-06-07 00:17:30Z INFO CredentialManager] GetCredentialProvider
+[2023-06-07 00:17:30Z INFO CredentialManager] Creating type OAuth
+[2023-06-07 00:17:30Z INFO CredentialManager] Creating credential type: OAuth
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\bin'
+[2023-06-07 00:17:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development'
+[2023-06-07 00:17:30Z INFO HostContext] Well known config file 'RSACredentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials_rsaparams'
+[2023-06-07 00:17:30Z INFO RSAEncryptedFileKeyManager] Loading RSA key parameters from file C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials_rsaparams
+[2023-06-07 00:17:30Z INFO MessageListener] Attempt to create session.
+[2023-06-07 00:17:30Z INFO MessageListener] Connecting to the Runner Server...
+[2023-06-07 00:17:30Z INFO RunnerServer] EstablishVssConnection
+[2023-06-07 00:17:30Z INFO RunnerServer] Establish connection with 100 seconds timeout.
+[2023-06-07 00:17:30Z INFO GitHubActionsService] Starting operation Location.GetConnectionData
+[2023-06-07 00:17:30Z INFO RunnerServer] EstablishVssConnection
+[2023-06-07 00:17:30Z INFO RunnerServer] Establish connection with 60 seconds timeout.
+[2023-06-07 00:17:30Z INFO GitHubActionsService] Starting operation Location.GetConnectionData
+[2023-06-07 00:17:30Z INFO RunnerServer] EstablishVssConnection
+[2023-06-07 00:17:30Z INFO RunnerServer] Establish connection with 60 seconds timeout.
+[2023-06-07 00:17:30Z INFO GitHubActionsService] Starting operation Location.GetConnectionData
+[2023-06-07 00:17:30Z INFO GitHubActionsService] Finished operation Location.GetConnectionData
+[2023-06-07 00:17:30Z INFO GitHubActionsService] Finished operation Location.GetConnectionData
+[2023-06-07 00:17:30Z INFO GitHubActionsService] Finished operation Location.GetConnectionData
+[2023-06-07 00:17:30Z INFO MessageListener] VssConnection created
+[2023-06-07 00:17:30Z INFO Terminal] WRITE LINE: 
+[2023-06-07 00:17:30Z INFO Terminal] WRITE LINE: 
+[2023-06-07 00:17:31Z INFO RSAEncryptedFileKeyManager] Loading RSA key parameters from file C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials_rsaparams
+[2023-06-07 00:17:31Z INFO RSAEncryptedFileKeyManager] Loading RSA key parameters from file C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dev\deploy-development\.credentials_rsaparams
+[2023-06-07 00:17:31Z INFO GitHubActionsService] AAD Correlation ID for this token request: Unknown
+[2023-06-07 00:17:31Z ERR  GitHubActionsService] POST request to https://pipelines.actions.githubusercontent.com/VnbK8H00lfeMmbZBD2xykc3DOeYGA6vE0rfla2aE5ELQAWnLMg/_apis/distributedtask/pools/1/sessions failed. HTTP Status: Conflict, AFD Ref: Ref A: 70008981F17E41B4812CB5F926C3C2A4 Ref B: YVR311000108023 Ref C: 2023-06-07T00:17:31Z
+[2023-06-07 00:17:31Z ERR  MessageListener] Catch exception during create session.
+[2023-06-07 00:17:31Z ERR  MessageListener] GitHub.DistributedTask.WebApi.TaskAgentSessionConflictException: The actions runner deploy-development already has an active session for owner DESKTOP-73TG7H7.
+   at GitHub.Services.WebApi.VssHttpClientBase.HandleResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+   at GitHub.Services.WebApi.VssHttpClientBase.SendAsync(HttpRequestMessage message, HttpCompletionOption completionOption, Object userState, CancellationToken cancellationToken)
+   at GitHub.Services.WebApi.VssHttpClientBase.SendAsync[T](HttpRequestMessage message, Object userState, CancellationToken cancellationToken)
+   at GitHub.Services.WebApi.VssHttpClientBase.SendAsync[T](HttpMethod method, IEnumerable`1 additionalHeaders, Guid locationId, Object routeValues, ApiResourceVersion version, HttpContent content, IEnumerable`1 queryParameters, Object userState, CancellationToken cancellationToken)
+   at GitHub.Runner.Listener.MessageListener.CreateSessionAsync(CancellationToken token)
+[2023-06-07 00:17:31Z INFO MessageListener] The session for this runner already exists.
+[2023-06-07 00:17:31Z ERR  Terminal] WRITE ERROR: A session for this runner already exists.
+[2023-06-07 00:17:31Z INFO MessageListener] The session conflict exception haven't reached retry limit.
+[2023-06-07 00:17:31Z ERR  Terminal] WRITE ERROR: 2023-06-07 00:17:31Z: Runner connect error: The actions runner deploy-development already has an active session for owner DESKTOP-73TG7H7.. Retrying until reconnected.
+[2023-06-07 00:17:31Z INFO MessageListener] Sleeping for 30 seconds before retrying.
+[2023-06-07 00:17:36Z INFO Terminal] WRITE LINE: Exiting...
+[2023-06-07 00:17:36Z INFO ConfigurationStore] IsServiceConfigured()
+[2023-06-07 00:17:36Z INFO ConfigurationStore] IsServiceConfigured: True
+[2023-06-07 00:17:36Z INFO Runner] Received Ctrl-C signal, stop Runner.Listener and Runner.Worker.
+[2023-06-07 00:17:36Z INFO HostContext] Runner will be shutdown for UserCancelled
+[2023-06-07 00:17:36Z INFO Listener] Runner execution been cancelled.

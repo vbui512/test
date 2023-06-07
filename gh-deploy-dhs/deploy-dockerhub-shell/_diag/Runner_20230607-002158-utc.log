@@ -1,0 +1,90 @@
+[2023-06-07 00:21:58Z INFO HostContext] No proxy settings were found based on environmental variables (http_proxy/https_proxy/HTTP_PROXY/HTTPS_PROXY)
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO HostContext] Well known config file 'Credentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.credentials'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO HostContext] Well known config file 'Runner': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.runner'
+[2023-06-07 00:21:58Z INFO Listener] Runner is built for Windows (X64) - win-x64.
+[2023-06-07 00:21:58Z INFO Listener] RuntimeInformation: Microsoft Windows 10.0.19045.
+[2023-06-07 00:21:58Z INFO Listener] Version: 2.304.0
+[2023-06-07 00:21:58Z INFO Listener] Commit: 9ef4121b5b31ee5c03b7770288213d741081f747
+[2023-06-07 00:21:58Z INFO Listener] Culture: en-CA
+[2023-06-07 00:21:58Z INFO Listener] UI Culture: en-US
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO Listener] Validating directory permissions for: 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO CommandLineParser] Parse
+[2023-06-07 00:21:58Z INFO CommandLineParser] Parsing 1 args
+[2023-06-07 00:21:58Z INFO CommandLineParser] parsing argument
+[2023-06-07 00:21:58Z INFO CommandLineParser] HasArgs: False
+[2023-06-07 00:21:58Z INFO CommandLineParser] Adding Command: remove
+[2023-06-07 00:21:58Z INFO Listener] Arguments parsed
+[2023-06-07 00:21:58Z INFO Runner] ExecuteCommand
+[2023-06-07 00:21:58Z INFO ConfigurationStore] currentAssemblyLocation: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin\Runner.Listener.dll
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO ConfigurationStore] binPath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO ConfigurationStore] RootFolder: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO HostContext] Well known config file 'Runner': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.runner'
+[2023-06-07 00:21:58Z INFO ConfigurationStore] ConfigFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.runner
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO HostContext] Well known config file 'Credentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.credentials'
+[2023-06-07 00:21:58Z INFO ConfigurationStore] CredFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.credentials
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO HostContext] Well known config file 'MigratedCredentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.credentials_migrated'
+[2023-06-07 00:21:58Z INFO ConfigurationStore] MigratedCredFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.credentials_migrated
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:21:58Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:21:58Z INFO HostContext] Well known config file 'Service': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.service'
+[2023-06-07 00:21:58Z INFO ConfigurationStore] ServiceConfigFilePath: C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.service
+[2023-06-07 00:21:58Z INFO CommandSettings] Flag 'help': 'False'
+[2023-06-07 00:21:58Z INFO CommandSettings] Flag 'version': 'False'
+[2023-06-07 00:21:58Z INFO CommandSettings] Flag 'commit': 'False'
+[2023-06-07 00:21:58Z INFO CommandSettings] Flag 'check': 'False'
+[2023-06-07 00:21:58Z INFO CommandSettings] Command 'configure': 'False'
+[2023-06-07 00:21:58Z INFO CommandSettings] Command 'remove': 'True'
+[2023-06-07 00:21:58Z INFO CommandSettings] Flag 'local': 'False'
+[2023-06-07 00:21:58Z INFO ConfigurationStore] IsServiceConfigured()
+[2023-06-07 00:21:58Z INFO ConfigurationStore] IsServiceConfigured: False
+[2023-06-07 00:21:58Z INFO ConfigurationStore] IsConfigured()
+[2023-06-07 00:21:58Z INFO ConfigurationStore] IsConfigured: True
+[2023-06-07 00:21:58Z INFO ConfigurationStore] HasCredentials()
+[2023-06-07 00:21:58Z INFO ConfigurationStore] stored True
+[2023-06-07 00:21:58Z INFO ConfigurationStore] Read setting file: 299 chars
+[2023-06-07 00:21:58Z INFO CommandSettings] Arg 'token': ''
+[2023-06-07 00:21:58Z INFO CommandSettings] Flag 'unattended': 'False'
+[2023-06-07 00:21:58Z INFO PromptManager] ReadValue
+[2023-06-07 00:21:58Z INFO Terminal] WRITE: Enter runner remove token: 
+[2023-06-07 00:21:58Z INFO Terminal] READ SECRET
+[2023-06-07 00:22:16Z INFO Terminal] Read value: '***'
+[2023-06-07 00:22:17Z INFO ConfigurationManager] Http response code: OK from 'POST https://api.github.com/actions/runner-registration' (C897:4CFD:B4981:172EA8:647FCDB9)
+[2023-06-07 00:22:17Z INFO ConfigurationManager] cred retrieved via GitHub auth
+[2023-06-07 00:22:17Z INFO RunnerServer] EstablishVssConnection
+[2023-06-07 00:22:17Z INFO RunnerServer] Establish connection with 100 seconds timeout.
+[2023-06-07 00:22:17Z INFO GitHubActionsService] Starting operation Location.GetConnectionData
+[2023-06-07 00:22:17Z INFO RunnerServer] EstablishVssConnection
+[2023-06-07 00:22:17Z INFO RunnerServer] Establish connection with 60 seconds timeout.
+[2023-06-07 00:22:17Z INFO GitHubActionsService] Starting operation Location.GetConnectionData
+[2023-06-07 00:22:17Z INFO RunnerServer] EstablishVssConnection
+[2023-06-07 00:22:17Z INFO RunnerServer] Establish connection with 60 seconds timeout.
+[2023-06-07 00:22:17Z INFO GitHubActionsService] Starting operation Location.GetConnectionData
+[2023-06-07 00:22:17Z INFO GitHubActionsService] Finished operation Location.GetConnectionData
+[2023-06-07 00:22:18Z INFO GitHubActionsService] Finished operation Location.GetConnectionData
+[2023-06-07 00:22:18Z INFO GitHubActionsService] Finished operation Location.GetConnectionData
+[2023-06-07 00:22:18Z INFO Terminal] WRITE LINE: 
+[2023-06-07 00:22:18Z INFO ConfigurationStore] IsConfigured()
+[2023-06-07 00:22:18Z INFO ConfigurationStore] IsConfigured: True
+[2023-06-07 00:22:18Z INFO ConfigurationStore] HasCredentials()
+[2023-06-07 00:22:18Z INFO ConfigurationStore] stored True
+[2023-06-07 00:22:18Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\bin'
+[2023-06-07 00:22:18Z INFO HostContext] Well known directory 'Root': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell'
+[2023-06-07 00:22:18Z INFO HostContext] Well known config file 'RSACredentials': 'C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.credentials_rsaparams'
+[2023-06-07 00:22:18Z INFO RSAEncryptedFileKeyManager] Deleting RSA key parameters file C:\Users\Public\Documents\aaaSummer2023\cbr-platform-github\test\gh-deploy-dhs\deploy-dockerhub-shell\.credentials_rsaparams
+[2023-06-07 00:22:18Z INFO Terminal] WRITE LINE: 
+[2023-06-07 00:22:18Z INFO Listener] Runner execution has finished with return code 0

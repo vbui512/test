@@ -1,0 +1,9 @@
+﻿{
+  "agentId": 5,
+  "agentName": "docker",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelines.actions.githubusercontent.com/VnbK8H00lfeMmbZBD2xykc3DOeYGA6vE0rfla2aE5ELQAWnLMg",
+  "gitHubUrl": "https://github.com/vbui512/test",
+  "workFolder": "_work"
+}
