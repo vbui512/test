@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       config-path:
-        required: false
+        required: true
         type: string
     secrets:
       envPAT:
@@ -16,7 +16,7 @@ env:
   HUB_USER: "${{ secrets.HUB_USER }}"
 jobs:
   export_image_tag:
-    runs-on: [self-hosted, deploy-dockerhub-shell]
+    runs-on: [self-hosted, '${{ inputs.config-path }}']
     steps:
     - run: |
         export IMAGE_TAG=v$(git show -s --format=%cs $CI_COMMIT_SHA).`git rev-parse --short=8 $CI_COMMIT_SHA`
