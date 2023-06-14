@@ -128,7 +128,7 @@ jobs:
       with:
         fetch-depth: 50
     - run: |
-        cd server
+        cd ./server
         pip install -r requirements.txt
         python -m black --check .
         python manage.py check
