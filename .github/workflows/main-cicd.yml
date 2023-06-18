@@ -15,16 +15,6 @@ env:
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
 jobs:
-  build-info:
-    runs-on: [self-hosted, docker]
-    container:
-      image: alpine:latest
-    if: ${{ github.event_name }} != "push"
-    timeout-minutes: 60
-    steps:
-    - uses: actions/checkout@v3.5.0
-      with:
-        fetch-depth: 50
 
   build-common:
     runs-on: [self-hosted, docker]
