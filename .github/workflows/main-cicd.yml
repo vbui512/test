@@ -126,7 +126,7 @@ jobs:
       config-path: deploy-dockerhub-shell
   
   build-docker-publish-docker-images:
-    needs: [build-info, build-common, build-mobile, build-web, build-server, export-image-tag-for-build-docker]
+    needs: [build-common, build-mobile, build-web, build-server, export-image-tag-for-build-docker]
     runs-on: [self-hosted, deploy-dockerhub-shell]
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
