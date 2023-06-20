@@ -118,11 +118,11 @@ jobs:
         image: postgres:13.1-alpine
     env:
       DOMAIN: example.com
-      SECRET_KEY: test
+      SECRET_KEY: secretkey
       POSTGRES_DB: cbr
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_HOST: test_postgres
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST: cbr_postgres
     steps:
     - uses: actions/checkout@v3.5.0
       with:
