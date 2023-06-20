@@ -15,7 +15,22 @@ env:
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
 jobs:
-
+  build-info:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event_name }} != "push"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+    - run: |
+        echo "This task give the CI/CD pipeline something to (almost always) run."
+        echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+        echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+        echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+        
   build-common:
     runs-on: [self-hosted, docker]
     container:
