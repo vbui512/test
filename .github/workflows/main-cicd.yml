@@ -15,40 +15,125 @@ env:
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
 jobs:
-  build-server:
+  build-info:
     runs-on: [self-hosted, docker]
     container:
-      image: python:3.9.1-buster
-    if: |
-      ${{ github.event.pull_request.number }} != null) 
-      || ${{ github.ref }} == $DEV_BRANCH 
-      || ${{ github.ref }} == $STG_BRANCH 
-      || ${{ github.ref }} == $PROD_BRANCH) 
-      || ${{ github.event_name }} == "schedule" 
-      || ${{ github.event_name }} == "web"
+      image: node:14
+    if: ${{ github.event_name }} != "push"
     timeout-minutes: 60
-    services:
-      test_postgres:
-        image: postgres:13.1-alpine
-    env:
-      DOMAIN: example.com
-      SECRET_KEY: test
-      POSTGRES_DB: cbr
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_HOST: test_postgres
     steps:
     - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 50
     - run: |
-        ping test_postgres
-        cd ./server
-        pip install -r requirements.txt
-        python -m black --check .
-        python manage.py check
-        python manage.py makemigrations --check
-        python manage.py test
+        echo "This task give the CI/CD pipeline something to (almost always) run."
+        echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+        echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+        echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+        
+  build-common:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+    - run: |
+        npm install -g npm@$NPM_VERSION
+        cd common
+        npm ci
+        npx prettier --check .
+        npx tsc
+
+#   build-mobile:
+#     runs-on: [self-hosted, docker]
+#     container:
+#       image: node:14
+#     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+#     timeout-minutes: 60
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - run: |
+#         npm install -g npm@$NPM_VERSION
+#         cd mobile
+#         npm uninstall @cbr/common
+#         COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
+#         npm install $COMMON_PACK_NAME
+#         npm ci
+#         npx prettier --check .
+#         npm run build dev
+
+#   build-web:
+#     runs-on: [self-hosted, docker]
+#     container:
+#       image: node:14
+#     if: |
+#       ${{ github.event.pull_request.number }} != null) 
+#       || ${{ github.ref }} == $DEV_BRANCH 
+#       || ${{ github.ref }} == $STG_BRANCH 
+#       || ${{ github.ref }} == $PROD_BRANCH) 
+#       || ${{ github.event_name }} == "schedule" 
+#       || ${{ github.event_name }} == "web"
+#       timeout-minutes: 60
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - run: |
+#         npm install -g npm@$NPM_VERSION
+#         cd common
+#         npm ci
+#         cd ../web
+#         npm ci
+#         npx prettier --check .
+#         GENERATE_SOURCEMAP=false npm run build
+#         cd build && tar -czvf ../../web_build.tar.gz .
+#     - uses: actions/upload-artifact@v3.1.1
+#       if: success()
+#       with:
+#         name: "${{ github.job }}"
+#         retention-days: 7
+#         path: web_build.tar.gz
+        
+
+#   build-server:
+#     runs-on: [self-hosted, docker]
+#     container:
+#       image: python:3.9.1-buster
+#     if: |
+#       ${{ github.event.pull_request.number }} != null) 
+#       || ${{ github.ref }} == $DEV_BRANCH 
+#       || ${{ github.ref }} == $STG_BRANCH 
+#       || ${{ github.ref }} == $PROD_BRANCH) 
+#       || ${{ github.event_name }} == "schedule" 
+#       || ${{ github.event_name }} == "web"
+#     timeout-minutes: 60
+#     services:
+#       test_postgres:
+#         image: postgres:13.1-alpine
+#     env:
+#       DOMAIN: example.com
+#       SECRET_KEY: test
+#       POSTGRES_DB: cbr
+#       POSTGRES_USER: test
+#       POSTGRES_PASSWORD: test
+#       POSTGRES_HOST: test_postgres
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - run: |
+#         cd ./server
+#         pip install -r requirements.txt
+#         python -m black --check .
+#         python manage.py check
+#         python manage.py makemigrations --check
+#         python manage.py test
 
   export-image-tag-for-build-docker:
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
@@ -56,6 +141,138 @@ jobs:
     with:
       config-path: deploy-dockerhub-shell
   
+#   build-docker-publish-docker-images:
+#     needs: [build-common, build-mobile, build-web, build-server, export-image-tag-for-build-docker]
+#     runs-on: [self-hosted, deploy-dockerhub-shell]
+#     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
+#     timeout-minutes: 60
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - uses: actions/download-artifact@v3.0.1
+#     - run: |
+#         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
+#         docker images
+#         docker login -u $HUB_USER -p $HUB_TOKEN
+#         docker push $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
+#         docker push $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
+#         docker logout
+#         docker images -a | grep -e "$HUB_REPO_BACKEND" -e "$HUB_REPO_FRONTEND" | awk '{print $3}' | xargs docker rmi --force
+#         docker images
 
+  test-common:
+    needs: [build-common]
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+    - uses: actions/download-artifact@v3.0.1
+    - run: |
+        npm install -g npm@$NPM_VERSION
+        cd common
+        npm ci
+        npm run test-ci
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+#     # 'artifacts.cobertura' was not transformed because there is no suitable equivalent in GitHub Actions
+  
+#   test-caddy:
+#     needs: build-docker-publish-docker-images
+#     runs-on: [self-hosted, docker]
+#     container:
+#       image: caddy:2.4.6
+#     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+#     timeout-minutes: 60
+#     env:
+#       DOMAIN: example.com
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - uses: actions/download-artifact@v3.0.1
+#     - run: caddy validate --config caddy/Caddyfile
+    
+#   deploy-development-pre-script:
+#     needs: [test-common, test-caddy]
+#     runs-on: [self-hosted, deploy-development]
+#     if: ${{ github.ref }} == $DEV_BRANCH
+#     environment:
+#       name: development
+#       url: https://cbr-dev.cmpt.sfu.ca
+#     timeout-minutes: 60
+#     env:
+#       BRANCH_TAG: dev
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - uses: actions/download-artifact@v3.0.1
+    
+#   deploy-development-from-dockerhub:
+#     needs: [deploy-development-pre-script]
+#     uses: vbui512/test/.github/workflows/deploy-from-dockerhub.yml@d201cb9781b92ae1774aba6af6346c5858b362f7
+#     with:
+#       config-path: deploy-development
+  
+#   retag-and-upload-development:
+#     needs: [deploy-development-pre-script]
+#     uses: vbui512/test/.github/workflows/retag-and-upload-dockerhub.yml@5614cff34c39637e3bb5f7fd1add8f2db381abf8
+#     with:
+#       config-path: deploy-development
+      
+#   deploy-staging-pre-script:
+#     needs: [test-common, test-caddy]
+#     runs-on: [self-hosted, deploy-development]
+#     if: ${{ github.ref }} == $STG_BRANCH
+#     environment:
+#       name: staging
+#       url: https://cbr-stg.cmpt.sfu.ca
+#     timeout-minutes: 60
+#     env:
+#       BRANCH_TAG: dev
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - uses: actions/download-artifact@v3.0.1
+    
+#   deploy-staging-from-dockerhub:
+#     needs: [deploy-staging-pre-script]
+#     uses: vbui512/test/.github/workflows/deploy-from-dockerhub.yml@d201cb9781b92ae1774aba6af6346c5858b362f7
+#     with:
+#       config-path: deploy-staging
+  
+#   retag-and-upload-staging:
+#     needs: [deploy-staging-pre-script]
+#     uses: vbui512/test/.github/workflows/retag-and-upload-dockerhub.yml@5614cff34c39637e3bb5f7fd1add8f2db381abf8
+#     with:
+#       config-path: deploy-staging
+      
+#   deploy-production-pre-script:
+#     needs: [test-common, test-caddy]
+#     runs-on: [self-hosted, deploy-dockerhub-shell]
+#     if: ${{ github.ref }} == $PROD_BRANCH
+#     environment:
+#       name: staging
+#       url: https://cbr-stg.cmpt.sfu.ca
+#     timeout-minutes: 60
+#     env:
+#       BRANCH_TAG: dev
+#     steps:
+#     - uses: actions/checkout@v3.5.0
+#       with:
+#         fetch-depth: 50
+#     - uses: actions/download-artifact@v3.0.1
+  
+#   retag-and-upload-production:
+#     needs: [deploy-production-pre-script]
+#     uses: vbui512/test/.github/workflows/retag-and-upload-dockerhub.yml@5614cff34c39637e3bb5f7fd1add8f2db381abf8
+#     with:
+#       config-path: deploy-dockerhub-shell
 
  
