@@ -15,13 +15,7 @@ env:
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
 jobs:
-  prune:
-    runs-on: [self-hosted, docker]
-    steps:
-    - run: docker compose down
-  
   build-server:
-    needs: [prune]
     runs-on: [self-hosted, docker]
     container:
       image: python:3.9.1-buster
@@ -48,8 +42,7 @@ jobs:
       with:
         fetch-depth: 50
     - run: |
-        cat server/cbr/settings.py
-        ping cbr_postgres
+        ping test_postgres
         cd ./server
         pip install -r requirements.txt
         python -m black --check .
