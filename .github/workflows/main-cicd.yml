@@ -18,7 +18,7 @@ jobs:
   prune:
     runs-on: [self-hosted, docker]
     steps:
-    - run: docker system prune
+    - run: docker compose down
   
   build-server:
     needs: [prune]
@@ -43,12 +43,12 @@ jobs:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
       POSTGRES_HOST: test_postgres
-      POSTGRES_PORT: 5432
     steps:
     - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 50
     - run: |
+        ping test_postgres
         cd ./server
         pip install -r requirements.txt
         python -m black --check .
