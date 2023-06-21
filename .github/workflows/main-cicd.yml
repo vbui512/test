@@ -48,7 +48,8 @@ jobs:
       with:
         fetch-depth: 50
     - run: |
-        ls
+        cat server/cbr/settings.py
+        ping cbr_postgres
         cd ./server
         pip install -r requirements.txt
         python -m black --check .
