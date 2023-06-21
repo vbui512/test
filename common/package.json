@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "test": "LANG=en-US jest",
-        "test-ci": "LANG=en-US jest --ci --coverage --reporters=default --reporters=jest-junit"
+        "test-ci": "LANG=en-US jest --ci --coverage --reporters=default --reporters=jest-junit --runInBand --detectOpenHandles --forceExit"
     },
     "devDependencies": {
         "@testing-library/react-hooks": "^7.0.1",
