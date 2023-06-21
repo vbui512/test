@@ -48,7 +48,7 @@ jobs:
       with:
         fetch-depth: 50
     - run: |
-        ping test_postgres
+        ls
         cd ./server
         pip install -r requirements.txt
         python -m black --check .
