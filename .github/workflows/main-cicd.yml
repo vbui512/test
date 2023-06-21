@@ -37,7 +37,6 @@ jobs:
     services:
       test_postgres:
         image: postgres:13.1-alpine
-        options: --network host
     env:
       DOMAIN: example.com
       SECRET_KEY: test
