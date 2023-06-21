@@ -118,12 +118,16 @@ jobs:
         image: postgres:13.1-alpine
     env:
       DOMAIN: example.com
-      SECRET_KEY: secretkey
+      SECRET_KEY: test
       POSTGRES_DB: cbr
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_HOST: cbr_postgres
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_HOST: test_postgres
     steps:
+    - name: Start PostgreSQL service
+      run: |
+        docker system prune
+        docker run -d --name test_postgres -p 5432:5432 postgres:13.1-alpine
     - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 50
@@ -134,6 +138,8 @@ jobs:
         python manage.py check
         python manage.py makemigrations --check
         python manage.py test
+    - name: Stop PostgreSQL service
+      run: docker stop test_postgres
 
   export-image-tag-for-build-docker:
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
