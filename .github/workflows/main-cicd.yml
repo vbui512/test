@@ -22,7 +22,7 @@ jobs:
     if: ${{ github.event_name }} != "push"
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v3.5.0
+    - uses: actions/checkout@v3.0
       with:
         fetch-depth: 50
     - run: |
@@ -38,7 +38,7 @@ jobs:
     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v3.5.0
+    - uses: actions/checkout@v3.0
       with:
         fetch-depth: 50
     - run: |
@@ -55,7 +55,7 @@ jobs:
     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v3.5.0
+    - uses: actions/checkout@v3.0
       with:
         fetch-depth: 50
     - run: |
@@ -81,7 +81,7 @@ jobs:
       || ${{ github.event_name }} == "web"
       timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v3.5.0
+    - uses: actions/checkout@v3.0
       with:
         fetch-depth: 50
     - run: |
@@ -156,7 +156,7 @@ jobs:
 #     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
 #     timeout-minutes: 60
 #     steps:
-#     - uses: actions/checkout@v3.5.0
+#     - uses: actions/checkout@v3.0
 #       with:
 #         fetch-depth: 50
 #     - uses: actions/download-artifact@v3.0.1
@@ -178,7 +178,7 @@ jobs:
 #     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
 #     timeout-minutes: 60
 #     steps:
-#     - uses: actions/checkout@v3.5.0
+#     - uses: actions/checkout@v3.0
 #       with:
 #         fetch-depth: 50
 #     - uses: actions/download-artifact@v3.0.1
@@ -200,7 +200,7 @@ jobs:
 #     env:
 #       DOMAIN: example.com
 #     steps:
-#     - uses: actions/checkout@v3.5.0
+#     - uses: actions/checkout@v3.0
 #       with:
 #         fetch-depth: 50
 #     - uses: actions/download-artifact@v3.0.1
@@ -217,7 +217,7 @@ jobs:
 #     env:
 #       BRANCH_TAG: dev
 #     steps:
-#     - uses: actions/checkout@v3.5.0
+#     - uses: actions/checkout@v3.0
 #       with:
 #         fetch-depth: 50
 #     - uses: actions/download-artifact@v3.0.1
@@ -245,7 +245,7 @@ jobs:
 #     env:
 #       BRANCH_TAG: dev
 #     steps:
-#     - uses: actions/checkout@v3.5.0
+#     - uses: actions/checkout@v3.0
 #       with:
 #         fetch-depth: 50
 #     - uses: actions/download-artifact@v3.0.1
@@ -273,7 +273,7 @@ jobs:
 #     env:
 #       BRANCH_TAG: dev
 #     steps:
-#     - uses: actions/checkout@v3.5.0
+#     - uses: actions/checkout@v3.0
 #       with:
 #         fetch-depth: 50
 #     - uses: actions/download-artifact@v3.0.1
