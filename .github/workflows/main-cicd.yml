@@ -127,14 +127,22 @@ jobs:
     - uses: actions/checkout@v3.0.0
       with:
         fetch-depth: 50
-    - name: Install dependencies and build
-      run: |
-        cd ./server
-        pip install -r requirements.txt
-        python -m black --check .
-        python manage.py check
-        python manage.py makemigrations --check
-        python manage.py test
+    - name: Install dependencies
+      run:  pip install -r requirements.txt
+      working-directory: ./server
+    - name: Check spacing
+      run:  python -m black --check .
+      working-directory: ./server
+    - name: Run `manage.py check`
+      run:  python manage.py check
+      working-directory: ./server
+    - name: Run Migrations
+      run:  python manage.py makemigrations --check
+      working-directory: ./server
+    - name: Run `manage.py test`
+      run:  python manage.py test
+      working-directory: ./server
+
 
   export-image-tag-for-build-docker:
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
