@@ -43,7 +43,7 @@ jobs:
       with:
         fetch-depth: 50
     - run: |
-        ls -lanR
+        ls -lanR /github/home/
         chown -R 0:0 "/github/home/.npm"
         npm install -g npm@$NPM_VERSION
         cd common
