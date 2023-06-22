@@ -15,90 +15,90 @@ env:
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
 jobs:
-#   build-info:
-#     runs-on: [self-hosted, docker]
-#     container:
-#       image: node:14
-#     if: ${{ github.event_name }} != "push"
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v3.5.0
-#       with:
-#         fetch-depth: 50
-#     - run: |
-#         echo "This task give the CI/CD pipeline something to (almost always) run."
-#         echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-#         echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-#         echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+  build-info:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event_name }} != "push"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+    - run: |
+        echo "This task give the CI/CD pipeline something to (almost always) run."
+        echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+        echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+        echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
         
-#   build-common:
-#     runs-on: [self-hosted, docker]
-#     container:
-#       image: node:14
-#     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v3.5.0
-#       with:
-#         fetch-depth: 50
-#     - run: |
-#         npm install -g npm@$NPM_VERSION
-#         cd common
-#         npm ci
-#         npx prettier --check .
-#         npx tsc
+  build-common:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+    - run: |
+        npm install -g npm@$NPM_VERSION
+        cd common
+        npm ci
+        npx prettier --check .
+        npx tsc
 
-#   build-mobile:
-#     runs-on: [self-hosted, docker]
-#     container:
-#       image: node:14
-#     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v3.5.0
-#       with:
-#         fetch-depth: 50
-#     - run: |
-#         npm install -g npm@$NPM_VERSION
-#         cd mobile
-#         npm uninstall @cbr/common
-#         COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
-#         npm install $COMMON_PACK_NAME
-#         npm ci
-#         npx prettier --check .
-#         npm run build dev
+  build-mobile:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+    - run: |
+        npm install -g npm@$NPM_VERSION
+        cd mobile
+        npm uninstall @cbr/common
+        COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
+        npm install $COMMON_PACK_NAME
+        npm ci
+        npx prettier --check .
+        npm run build dev
 
-#   build-web:
-#     runs-on: [self-hosted, docker]
-#     container:
-#       image: node:14
-#     if: |
-#       ${{ github.event.pull_request.number }} != null) 
-#       || ${{ github.ref }} == $DEV_BRANCH 
-#       || ${{ github.ref }} == $STG_BRANCH 
-#       || ${{ github.ref }} == $PROD_BRANCH) 
-#       || ${{ github.event_name }} == "schedule" 
-#       || ${{ github.event_name }} == "web"
-#       timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v3.5.0
-#       with:
-#         fetch-depth: 50
-#     - run: |
-#         npm install -g npm@$NPM_VERSION
-#         cd common
-#         npm ci
-#         cd ../web
-#         npm ci
-#         npx prettier --check .
-#         GENERATE_SOURCEMAP=false npm run build
-#         cd build && tar -czvf ../../web_build.tar.gz .
-#     - uses: actions/upload-artifact@v3.1.1
-#       if: success()
-#       with:
-#         name: "${{ github.job }}"
-#         retention-days: 7
-#         path: web_build.tar.gz
+  build-web:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: |
+      ${{ github.event.pull_request.number }} != null) 
+      || ${{ github.ref }} == $DEV_BRANCH 
+      || ${{ github.ref }} == $STG_BRANCH 
+      || ${{ github.ref }} == $PROD_BRANCH) 
+      || ${{ github.event_name }} == "schedule" 
+      || ${{ github.event_name }} == "web"
+      timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 50
+    - run: |
+        npm install -g npm@$NPM_VERSION
+        cd common
+        npm ci
+        cd ../web
+        npm ci
+        npx prettier --check .
+        GENERATE_SOURCEMAP=false npm run build
+        cd build && tar -czvf ../../web_build.tar.gz .
+    - uses: actions/upload-artifact@v3.1.1
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 7
+        path: web_build.tar.gz
         
 
   build-server:
