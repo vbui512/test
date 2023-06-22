@@ -124,7 +124,7 @@ jobs:
       POSTGRES_PASSWORD: test
       POSTGRES_HOST: test_postgres
     steps:
-    - uses: actions/checkout@v3.0.0
+    - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 50
     - run: |
