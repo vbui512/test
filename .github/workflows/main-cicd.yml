@@ -152,8 +152,8 @@ jobs:
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
         echo Cloning from: $httpsPathWithToken
         git clone $httpsPathWithToken repo
-        ls -la tsconfig.json
-        cat tsconfig.json
+        ls -la ./web/tsconfig.json
+        cat ./web/tsconfig.json
     - name: Install NPM globally
       run:  npm install -g npm@$NPM_VERSION
     - name: Build common
@@ -231,8 +231,8 @@ jobs:
       working-directory: ./server
     - name: "TODO: SKIPPING TEST OF 'manage.py test'"
       run: |
-        echo "::notice SKIPPING TEST OF 'manage.py test'"
-        echo "::warning SKIPPING TEST OF 'manage.py test'"
+        echo "::notice file=manage.py::SKIPPING 'manage.py test'"
+        echo "::warning file=manage.py,title=SKIPPING TEST::Skipped manage.py test"
         # python manage.py test
       working-directory: ./server
 
