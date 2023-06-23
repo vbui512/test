@@ -161,7 +161,16 @@ jobs:
       run:  npm ci
       working-directory: ./web
     - name: Run `npx prettier`
-      run:  npx prettier --check .
+      run:  |
+        echo Prettier output:
+        npx prettier tsconfig.json
+        echo Original file
+        cat tsconfig.json
+        echo diff of the two
+        npx prettier tsconfig.json > new.xxx
+        diff new.xxx tsconfig.json
+        echo Running prettier --check
+        npx prettier --check .
       working-directory: ./web
     - name: Compress files
       run:  |
