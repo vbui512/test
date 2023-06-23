@@ -224,10 +224,14 @@ jobs:
 
 
 
-
-  
+  call_export_image_tag:
+    if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
+    uses: ./.github/workflows/export-image-tag.yml
+    with:
+      config-path: docker
+      
   build-docker-publish-docker-images:
-    needs: [build-common, build-mobile, build-web, build-server]
+    needs: [build-common, build-mobile, build-web, build-server, call_export_image_tag]
     runs-on: [self-hosted, docker]
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
@@ -238,12 +242,12 @@ jobs:
     #     httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
     #     echo Cloning from: $httpsPathWithToken
     #     git clone $httpsPathWithToken repo
-    - uses: actions/checkout@v3.0.0
-      with:
-        fetch-depth: 50
-    - uses: ./.github/workflows/export-image-tag.yml #@b5cd22688a0294a86f425943b453d7a7b544375f
-      with:
-        config-path: docker
+    # - uses: actions/checkout@v3.0.0
+    #   with:
+    #     fetch-depth: 50
+    # - uses: ./.github/workflows/export-image-tag.yml #@b5cd22688a0294a86f425943b453d7a7b544375f
+    #   with:
+    #     config-path: docker
     - uses: actions/download-artifact@v3.0.1
       with:
         name: build-web

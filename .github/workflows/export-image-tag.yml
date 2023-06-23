@@ -18,6 +18,9 @@ jobs:
   export_image_tag:
     runs-on: [self-hosted, '${{ inputs.config-path }}']
     steps:
+    - uses: actions/checkout@v3.0.0
+      with:
+        fetch-depth: 50
     - run: |
         export IMAGE_TAG=v$(git show -s --format=%cs $CI_COMMIT_SHA).`git rev-parse --short=8 $CI_COMMIT_SHA`
         echo "Docker hub user ='$HUB_USER',     version='$IMAGE_TAG'"
