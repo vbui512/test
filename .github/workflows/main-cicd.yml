@@ -32,57 +32,57 @@ jobs:
   #         echo 'runner.workspace === ${{ runner.workspace }}'
   #         echo "RUNNER_WORKSPACE === $RUNNER_WORKSPACE"
 
-  dump_contexts_to_log:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo '$GITHUB_CONTEXT'
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-        run: echo '$JOB_CONTEXT'
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-        run: echo '$STEPS_CONTEXT'
-      - name: Dump runner context
-        env:
-          RUNNER_CONTEXT: ${{ toJson(runner) }}
-        run: echo '$RUNNER_CONTEXT'
-      - name: Dump strategy context
-        env:
-          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
-        run: echo '$STRATEGY_CONTEXT'
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJson(matrix) }}
-        run: echo '$MATRIX_CONTEXT'
+  # dump_contexts_to_log:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Dump GitHub context
+  #       env:
+  #         GITHUB_CONTEXT: ${{ toJson(github) }}
+  #       run: echo '$GITHUB_CONTEXT'
+  #     - name: Dump job context
+  #       env:
+  #         JOB_CONTEXT: ${{ toJson(job) }}
+  #       run: echo '$JOB_CONTEXT'
+  #     - name: Dump steps context
+  #       env:
+  #         STEPS_CONTEXT: ${{ toJson(steps) }}
+  #       run: echo '$STEPS_CONTEXT'
+  #     - name: Dump runner context
+  #       env:
+  #         RUNNER_CONTEXT: ${{ toJson(runner) }}
+  #       run: echo '$RUNNER_CONTEXT'
+  #     - name: Dump strategy context
+  #       env:
+  #         STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+  #       run: echo '$STRATEGY_CONTEXT'
+  #     - name: Dump matrix context
+  #       env:
+  #         MATRIX_CONTEXT: ${{ toJson(matrix) }}
+  #       run: echo '$MATRIX_CONTEXT'
 
       
-  dump-from-container:    
-    runs-on: ubuntu-latest
-    container:
-      image: node:14.16
+  # dump-from-container:    
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: node:14.16
       
-    steps:
-      - name: Checkout repo into container
-        run: |
-          # Clone into new /isolated_build/ folder
-          mkdir /isolated_build/ ; cd /isolated_build/
-          # git clone https://<token>@github.com/<owner>/<repoName>.git
-          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-          echo Cloning from: $httpsPathWithToken
-          git clone $httpsPathWithToken repo
+  #   steps:
+  #     - name: Checkout repo into container
+  #       run: |
+  #         # Clone into new /isolated_build/ folder
+  #         mkdir /isolated_build/ ; cd /isolated_build/
+  #         # git clone https://<token>@github.com/<owner>/<repoName>.git
+  #         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #         echo Cloning from: $httpsPathWithToken
+  #         git clone $httpsPathWithToken repo
 
-          ls
-          cd ./repo/
-          echo "In Repo 'ls'"
-          ls
-          git checkout ${{github.sha}}
-          echo "In Repo after checkout specific product 'ls'"
-          ls
+  #         ls
+  #         cd ./repo/
+  #         echo "In Repo 'ls'"
+  #         ls
+  #         git checkout ${{github.sha}}
+  #         echo "In Repo after checkout specific product 'ls'"
+  #         ls
 
 
 
@@ -128,27 +128,17 @@ jobs:
         git clone $httpsPathWithToken repo
     # - name: Display home directory (DEBUG HACK)
     #   run:  ls -lanR /github/home/
-    - name: Install NPM globally
+    - name: Install NPM globally & Run 'npm ci'
       run:  |
-        # # <Begin Hack for work around on cmpt-cicd>
-        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-        # rm -rf ./.npm-cache   || true # just to be sure
-        # mkdir -p ./.npm-cache || true # just to be sure
-        # npm cache clean -f
-        # export npm_config_cache=./.npm-cache
-        # # <End Hack>
+        # <Begin Hack for work around on cmpt-cicd>
+        # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        rm -rf ./.npm-cache   || true     # just to be sure
+        mkdir -p ./.npm-cache || true     # just to be sure
+        npm cache clean -f
+        export npm_config_cache=./.npm-cache
+        # <End Hack>
         npm install -g npm@$NPM_VERSION --loglevel=verbose
-    - name: Run `npm ci`
-      run:  |
-        # # <Begin Hack for work around on cmpt-cicd>
-        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-        # rm -rf ./.npm-cache   || true # just to be sure
-        # mkdir -p ./.npm-cache || true # just to be sure
-        # npm cache clean -f
-        # export npm_config_cache=./.npm-cache
-        # # <End Hack>
         npm ci
       working-directory: ./common
     - name: Run `npx prettier`
