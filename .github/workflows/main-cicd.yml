@@ -67,21 +67,11 @@ jobs:
       image: node:14.16
       
     steps:
-      - name: dump
+      - name: Checkout repo into container
         run: |
-          echo 'github.workspace === ${{ github.workspace }}'
-          echo "GITHUB_WORKSPACE === $GITHUB_WORKSPACE"
-          echo 'runner.workspace === ${{ runner.workspace }}'
-          echo "RUNNER_WORKSPACE === $RUNNER_WORKSPACE"
-
-          mkdir /bawesome/
-          cd /bawesome/
+          # Clone into new /isolated_build/ folder
+          mkdir /isolated_build/ ; cd /isolated_build/
           # git clone https://<token>@github.com/<owner>/<repoName>.git
-
-          # echo git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
-          # git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
-
-
           httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
           echo Cloning from: $httpsPathWithToken
           git clone $httpsPathWithToken repo
@@ -97,63 +87,76 @@ jobs:
 
 
 
-  # build-info:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: node:14
-  #   if: ${{ github.event_name }} != "push"
-  #   timeout-minutes: 60
-  #   steps:
-  #   - uses: actions/checkout@v3.0.0
-  #     with:
-  #       fetch-depth: 50
-  #   - run: |
-  #       echo "This task give the CI/CD pipeline something to (almost always) run."
-  #       echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-  #       echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-  #       echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+  build-info:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event_name }} != "push"
+    timeout-minutes: 60
+    steps:
+    # - uses: actions/checkout@v3.0.0
+    #   with:
+    #     fetch-depth: 50
+      - name: Checkout repo into container
+        run: |
+          mkdir /isolated_build/ ; cd /isolated_build/
+          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+          echo Cloning from: $httpsPathWithToken
+          git clone $httpsPathWithToken repo
+
+      - run: |
+        echo "This task give the CI/CD pipeline something to (almost always) run."
+        echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+        echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+        echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
         
-  # build-common:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: node:14
-  #   if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-  #   timeout-minutes: 60
-  #   steps:
-  #   - uses: actions/checkout@v3.0.0
-  #     with:
-  #       fetch-depth: 50
-  #   - name: Display home directory (DEBUG HACK)
-  #     run:  ls -lanR /github/home/
-  #   - name: Install NPM globally
-  #     run:  |
-  #       # <Begin Hack for work around on cmpt-cicd>
-  #       # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-  #       # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-  #       rm -rf ./.npm-cache   || true # just to be sure
-  #       mkdir -p ./.npm-cache || true # just to be sure
-  #       npm cache clean -f
-  #       export npm_config_cache=./.npm-cache
-  #       # <End Hack>
-  #       npm install -g npm@$NPM_VERSION --loglevel=verbose
-  #   - name: Run `npm ci`
-  #     run:  |
-  #       # <Begin Hack for work around on cmpt-cicd>
-  #       # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-  #       # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-  #       rm -rf ./.npm-cache   || true # just to be sure
-  #       mkdir -p ./.npm-cache || true # just to be sure
-  #       npm cache clean -f
-  #       export npm_config_cache=./.npm-cache
-  #       # <End Hack>
-  #       npm ci
-  #     working-directory: ./common
-  #   - name: Run `npx prettier`
-  #     run:  npx prettier --check .
-  #     working-directory: ./common
-  #   - name: Run `npx tsc`
-  #     run:  npx tsc
-  #     working-directory: ./common
+  build-common:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    # - uses: actions/checkout@v3.0.0
+    #   with:
+    #     fetch-depth: 50
+    - name: Checkout repo into container
+        run: |
+          mkdir /isolated_build/ ; cd /isolated_build/
+          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+          echo Cloning from: $httpsPathWithToken
+          git clone $httpsPathWithToken repo
+    # - name: Display home directory (DEBUG HACK)
+    #   run:  ls -lanR /github/home/
+    - name: Install NPM globally
+      run:  |
+        # # <Begin Hack for work around on cmpt-cicd>
+        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        # rm -rf ./.npm-cache   || true # just to be sure
+        # mkdir -p ./.npm-cache || true # just to be sure
+        # npm cache clean -f
+        # export npm_config_cache=./.npm-cache
+        # # <End Hack>
+        npm install -g npm@$NPM_VERSION --loglevel=verbose
+    - name: Run `npm ci`
+      run:  |
+        # # <Begin Hack for work around on cmpt-cicd>
+        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        # rm -rf ./.npm-cache   || true # just to be sure
+        # mkdir -p ./.npm-cache || true # just to be sure
+        # npm cache clean -f
+        # export npm_config_cache=./.npm-cache
+        # # <End Hack>
+        npm ci
+      working-directory: ./common
+    - name: Run `npx prettier`
+      run:  npx prettier --check .
+      working-directory: ./common
+    - name: Run `npx tsc`
+      run:  npx tsc
+      working-directory: ./common
 
   # build-mobile:
   #   runs-on: [self-hosted, docker]
