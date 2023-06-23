@@ -115,7 +115,7 @@ jobs:
     - name: Install NPM globally & Build mobile
       run:  |
         set -x  # echo commands names
-        
+
         npm install -g npm@$NPM_VERSION
         npm uninstall @cbr/common
         COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
@@ -232,18 +232,21 @@ jobs:
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    - uses: ./.github/workflows/export-image-tag #@b5cd22688a0294a86f425943b453d7a7b544375f
-      with:
-        config-path: docker
     - name: Checkout repo into container
       run: |
         mkdir /isolated_build/ ; cd /isolated_build/
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
         echo Cloning from: $httpsPathWithToken
         git clone $httpsPathWithToken repo
+    - uses: ./.github/workflows/export-image-tag #@b5cd22688a0294a86f425943b453d7a7b544375f
+      with:
+        config-path: docker
     - uses: actions/download-artifact@v3.0.1
+      with:
+        path: /isolated_build/repo
     - run: |
         set -x  # echo commands names
+        ls -al
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
         docker images
         docker login -u $HUB_USER -p $HUB_TOKEN

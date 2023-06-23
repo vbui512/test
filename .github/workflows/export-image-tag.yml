@@ -24,5 +24,4 @@ jobs:
         echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG"
         echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG"
         docker images
-
-
+      working-directory: /isolated_build/repo
