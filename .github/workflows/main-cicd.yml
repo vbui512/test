@@ -94,10 +94,10 @@ jobs:
   #       npm install -g npm@$NPM_VERSION --loglevel=verbose
   #       npm ci
   #     working-directory: ./common
-  #   - name: Run `npx prettier`
+  #   - name: Run 'npx prettier'
   #     run:  npx prettier --check .
   #     working-directory: ./common
-  #   - name: Run `npx tsc`
+  #   - name: Run 'npx tsc'
   #     run:  npx tsc
   #     working-directory: ./common
 
@@ -152,6 +152,8 @@ jobs:
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
         echo Cloning from: $httpsPathWithToken
         git clone $httpsPathWithToken repo
+        ls -la tsconfig.json
+        cat tsconfig.json
     - name: Install NPM globally
       run:  npm install -g npm@$NPM_VERSION
     - name: Build common
@@ -160,11 +162,12 @@ jobs:
     - name: Build web
       run:  npm ci
       working-directory: ./web
-    - name: Run `npx prettier`
+    - name: Run 'npx prettier'
       run:  |
         echo Prettier output:
         npx prettier tsconfig.json
         echo Original file
+        ls -la tsconfig.json
         cat tsconfig.json
         echo diff of the two
         npx prettier tsconfig.json > new.xxx
@@ -220,7 +223,7 @@ jobs:
     - name: Check spacing
       run:  python -m black --check .
       working-directory: ./server
-    - name: Run `manage.py check`
+    - name: Run 'manage.py check'
       run:  python manage.py check
       working-directory: ./server
     - name: Run Migrations
