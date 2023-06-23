@@ -48,90 +48,90 @@ jobs:
   #       run: echo '$MATRIX_CONTEXT'
 
 
-  # build-info:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: node:14
-  #   if: ${{ github.event_name }} != "push"
-  #   timeout-minutes: 60
-  #   steps:
-  #     - name: Checkout repo into container
-  #       run: |
-  #         mkdir /isolated_build/ ; cd /isolated_build/
-  #         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-  #         echo Cloning from: $httpsPathWithToken
-  #         git clone $httpsPathWithToken repo
+  build-info:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event_name }} != "push"
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repo into container
+        run: |
+          mkdir /isolated_build/ ; cd /isolated_build/
+          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+          echo Cloning from: $httpsPathWithToken
+          git clone $httpsPathWithToken repo
 
-  #     - run: |
-  #         echo "This task give the CI/CD pipeline something to (almost always) run."
-  #         echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-  #         echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-  #         echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+      - run: |
+          echo "This task give the CI/CD pipeline something to (almost always) run."
+          echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+          echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+          echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
         
-  # build-common:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: node:14
-  #   if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-  #   timeout-minutes: 60
-  #   steps:
-  #   - name: Checkout repo into container
-  #     run: |
-  #       mkdir /isolated_build/ ; cd /isolated_build/
-  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-  #       echo Cloning from: $httpsPathWithToken
-  #       git clone $httpsPathWithToken repo
-  #   - name: Install NPM globally & Run 'npm ci'
-  #     run:  |
-  #       # # <Begin Hack for work around on cmpt-cicd>
-  #       # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-  #       # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-  #       # rm -rf ./.npm-cache   || true     # just to be sure
-  #       # mkdir -p ./.npm-cache || true     # just to be sure
-  #       # npm cache clean -f
-  #       # export npm_config_cache=./.npm-cache
-  #       # # <End Hack>
-  #       npm install -g npm@$NPM_VERSION --loglevel=verbose
-  #       npm ci
-  #     working-directory: /isolated_build/repo/common
-  #   - name: Run 'npx prettier'
-  #     run:  npx prettier --check .
-  #     working-directory: /isolated_build/repo/common
-  #   - name: Run 'npx tsc'
-  #     run:  npx tsc
-  #     working-directory: /isolated_build/repo/common
+  build-common:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    - name: Checkout repo into container
+      run: |
+        mkdir /isolated_build/ ; cd /isolated_build/
+        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+        echo Cloning from: $httpsPathWithToken
+        git clone $httpsPathWithToken repo
+    - name: Install NPM globally & Run 'npm ci'
+      run:  |
+        # # <Begin Hack for work around on cmpt-cicd>
+        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        # rm -rf ./.npm-cache   || true     # just to be sure
+        # mkdir -p ./.npm-cache || true     # just to be sure
+        # npm cache clean -f
+        # export npm_config_cache=./.npm-cache
+        # # <End Hack>
+        npm install -g npm@$NPM_VERSION --loglevel=verbose
+        npm ci
+      working-directory: /isolated_build/repo/common
+    - name: Run 'npx prettier'
+      run:  npx prettier --check .
+      working-directory: /isolated_build/repo/common
+    - name: Run 'npx tsc'
+      run:  npx tsc
+      working-directory: /isolated_build/repo/common
 
-  # build-mobile:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: node:14
-  #   if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-  #   timeout-minutes: 60
-  #   steps:
-  #   - name: Checkout repo into container
-  #     run: |
-  #       mkdir /isolated_build/ ; cd /isolated_build/
-  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-  #       echo Cloning from: $httpsPathWithToken
-  #       git clone $httpsPathWithToken repo
-  #   - name: Install NPM globally & Build mobile
-  #     run:  |
-  #       # # <Begin Hack for work around on cmpt-cicd>
-  #       # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-  #       # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-  #       # rm -rf ./.npm-cache   || true     # just to be sure
-  #       # mkdir -p ./.npm-cache || true     # just to be sure
-  #       # npm cache clean -f
-  #       # export npm_config_cache=./.npm-cache
-  #       # # <End Hack>
-  #       npm install -g npm@$NPM_VERSION
-  #       cd mobile
-  #       npm uninstall @cbr/common
-  #       COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
-  #       npm install $COMMON_PACK_NAME
-  #       npm ci
-  #       npx prettier --check .
-  #       npm run build dev
+  build-mobile:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    - name: Checkout repo into container
+      run: |
+        mkdir /isolated_build/ ; cd /isolated_build/
+        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+        echo Cloning from: $httpsPathWithToken
+        git clone $httpsPathWithToken repo
+    - name: Install NPM globally & Build mobile
+      run:  |
+        # # <Begin Hack for work around on cmpt-cicd>
+        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        # rm -rf ./.npm-cache   || true     # just to be sure
+        # mkdir -p ./.npm-cache || true     # just to be sure
+        # npm cache clean -f
+        # export npm_config_cache=./.npm-cache
+        # # <End Hack>
+        npm install -g npm@$NPM_VERSION
+        cd mobile
+        npm uninstall @cbr/common
+        COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
+        npm install $COMMON_PACK_NAME
+        npm ci
+        npx prettier --check .
+        npm run build dev
 
   build-web:
     runs-on: [self-hosted, docker]
@@ -163,17 +163,7 @@ jobs:
       run:  npm ci
       working-directory: /isolated_build/repo/web
     - name: Run 'npx prettier'
-      run:  |
-        echo Prettier output:
-        npx prettier tsconfig.json
-        echo Original file
-        ls -la tsconfig.json
-        cat tsconfig.json
-        echo diff of the two
-        npx prettier tsconfig.json > new.xxx
-        diff new.xxx tsconfig.json
-        echo Running prettier --check
-        npx prettier --check .
+      run:  npx prettier --check .
       working-directory: /isolated_build/repo/web
     - name: Compress files
       run:  |
