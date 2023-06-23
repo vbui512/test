@@ -121,11 +121,11 @@ jobs:
     #   with:
     #     fetch-depth: 50
     - name: Checkout repo into container
-        run: |
-          mkdir /isolated_build/ ; cd /isolated_build/
-          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-          echo Cloning from: $httpsPathWithToken
-          git clone $httpsPathWithToken repo
+      run: |
+        mkdir /isolated_build/ ; cd /isolated_build/
+        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+        echo Cloning from: $httpsPathWithToken
+        git clone $httpsPathWithToken repo
     # - name: Display home directory (DEBUG HACK)
     #   run:  ls -lanR /github/home/
     - name: Install NPM globally
