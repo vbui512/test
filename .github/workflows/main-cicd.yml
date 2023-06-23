@@ -168,7 +168,7 @@ jobs:
       with:
         name: "${{ github.job }}"
         retention-days: 7
-        path: /isolated_build/web_build.tar.gz
+        path: /isolated_build/repo/web_build.tar.gz
         
 
   build-server:
