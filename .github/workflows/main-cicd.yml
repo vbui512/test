@@ -126,8 +126,6 @@ jobs:
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
         echo Cloning from: $httpsPathWithToken
         git clone $httpsPathWithToken repo
-    # - name: Display home directory (DEBUG HACK)
-    #   run:  ls -lanR /github/home/
     - name: Install NPM globally & Run 'npm ci'
       run:  |
         # <Begin Hack for work around on cmpt-cicd>
@@ -148,108 +146,136 @@ jobs:
       run:  npx tsc
       working-directory: ./common
 
-  # build-mobile:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: node:14
-  #   if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-  #   timeout-minutes: 60
-  #   steps:
-  #   - uses: actions/checkout@v3.0.0
-  #     with:
-  #       fetch-depth: 50
-  #   - run: |
-  #       # <Begin Hack for work around on cmpt-cicd>
-  #       # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-  #       # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-  #       rm -rf ./.npm-cache   || true # just to be sure
-  #       mkdir -p ./.npm-cache || true # just to be sure
-  #       npm cache clean -f
-  #       export npm_config_cache=./.npm-cache
-  #       # <End Hack>
-  #       npm install -g npm@$NPM_VERSION
-  #       cd mobile
-  #       npm uninstall @cbr/common
-  #       COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
-  #       npm install $COMMON_PACK_NAME
-  #       npm ci
-  #       npx prettier --check .
-  #       npm run build dev
+  build-mobile:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    steps:
+    # - uses: actions/checkout@v3.0.0
+    #   with:
+    #     fetch-depth: 50
+    - name: Checkout repo into container
+      run: |
+        mkdir /isolated_build/ ; cd /isolated_build/
+        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+        echo Cloning from: $httpsPathWithToken
+        git clone $httpsPathWithToken repo
+    - name: Install NPM globally & Build mobile
+      run:  |
+        # <Begin Hack for work around on cmpt-cicd>
+        # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        rm -rf ./.npm-cache   || true     # just to be sure
+        mkdir -p ./.npm-cache || true     # just to be sure
+        npm cache clean -f
+        export npm_config_cache=./.npm-cache
+        # <End Hack>
+        npm install -g npm@$NPM_VERSION
+        cd mobile
+        npm uninstall @cbr/common
+        COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
+        npm install $COMMON_PACK_NAME
+        npm ci
+        npx prettier --check .
+        npm run build dev
 
-  # build-web:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: node:14
-  #   if: |
-  #     ${{ github.event.pull_request.number }} != null) 
-  #     || ${{ github.ref }} == $DEV_BRANCH 
-  #     || ${{ github.ref }} == $STG_BRANCH 
-  #     || ${{ github.ref }} == $PROD_BRANCH) 
-  #     || ${{ github.event_name }} == "schedule" 
-  #     || ${{ github.event_name }} == "web"
-  #     timeout-minutes: 60
-  #   steps:
-  #   - uses: actions/checkout@v3.0.0
-  #     with:
-  #       fetch-depth: 50
-  #   - run: |
-  #       npm install -g npm@$NPM_VERSION
-  #       cd common
-  #       npm ci
-  #       cd ../web
-  #       npm ci
-  #       npx prettier --check .
-  #       GENERATE_SOURCEMAP=false npm run build
-  #       cd build && tar -czvf ../../web_build.tar.gz .
-  #   - uses: actions/upload-artifact@v3.1.1
-  #     if: success()
-  #     with:
-  #       name: "${{ github.job }}"
-  #       retention-days: 7
-  #       path: web_build.tar.gz
+  build-web:
+    runs-on: [self-hosted, docker]
+    container:
+      image: node:14
+    if: |
+      ${{ github.event.pull_request.number }} != null) 
+      || ${{ github.ref }} == $DEV_BRANCH 
+      || ${{ github.ref }} == $STG_BRANCH 
+      || ${{ github.ref }} == $PROD_BRANCH) 
+      || ${{ github.event_name }} == "schedule" 
+      || ${{ github.event_name }} == "web"
+      timeout-minutes: 60
+    steps:
+    # - uses: actions/checkout@v3.0.0
+    #   with:
+    #     fetch-depth: 50
+    - name: Checkout repo into container
+      run: |
+        mkdir /isolated_build/ ; cd /isolated_build/
+        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+        echo Cloning from: $httpsPathWithToken
+        git clone $httpsPathWithToken repo
+    - name: Install NPM globally & Build web
+      run:  |
+        # <Begin Hack for work around on cmpt-cicd>
+        # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        rm -rf ./.npm-cache   || true     # just to be sure
+        mkdir -p ./.npm-cache || true     # just to be sure
+        npm cache clean -f
+        export npm_config_cache=./.npm-cache
+        # <End Hack>
+        npm install -g npm@$NPM_VERSION
+        cd common
+        npm ci
+        cd ../web
+        npm ci
+        npx prettier --check .
+        GENERATE_SOURCEMAP=false npm run build
+        cd build && tar -czvf ../../web_build.tar.gz .
+    - uses: actions/upload-artifact@v3.1.1
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 7
+        path: web_build.tar.gz
         
 
-  # build-server:
-  #   runs-on: [self-hosted, docker]
-  #   container:
-  #     image: python:3.9.1-buster
-  #   if: |
-  #     ${{ github.event.pull_request.number }} != null) 
-  #     || ${{ github.ref }} == $DEV_BRANCH 
-  #     || ${{ github.ref }} == $STG_BRANCH 
-  #     || ${{ github.ref }} == $PROD_BRANCH) 
-  #     || ${{ github.event_name }} == "schedule" 
-  #     || ${{ github.event_name }} == "web"
-  #   timeout-minutes: 60
-  #   services:
-  #     test_postgres:
-  #       image: postgres:13.1-alpine
-  #   env:
-  #     DOMAIN: example.com
-  #     SECRET_KEY: test
-  #     POSTGRES_DB: cbr
-  #     POSTGRES_USER: test
-  #     POSTGRES_PASSWORD: test
-  #     POSTGRES_HOST: test_postgres
-  #   steps:
-  #   - uses: actions/checkout@v3.0.0
-  #     with:
-  #       fetch-depth: 50
-  #   - name: Install dependencies
-  #     run:  pip install -r requirements.txt
-  #     working-directory: ./server
-  #   - name: Check spacing
-  #     run:  python -m black --check .
-  #     working-directory: ./server
-  #   - name: Run `manage.py check`
-  #     run:  python manage.py check
-  #     working-directory: ./server
-  #   - name: Run Migrations
-  #     run:  python manage.py makemigrations --check
-  #     working-directory: ./server
-  #   - name: Run `manage.py test`
-  #     run:  python manage.py test
-  #     working-directory: ./server
+  build-server:
+    runs-on: [self-hosted, docker]
+    container:
+      image: python:3.9.1-buster
+    if: |
+      ${{ github.event.pull_request.number }} != null) 
+      || ${{ github.ref }} == $DEV_BRANCH 
+      || ${{ github.ref }} == $STG_BRANCH 
+      || ${{ github.ref }} == $PROD_BRANCH) 
+      || ${{ github.event_name }} == "schedule" 
+      || ${{ github.event_name }} == "web"
+    timeout-minutes: 60
+    services:
+      test_postgres:
+        image: postgres:13.1-alpine
+    env:
+      DOMAIN: example.com
+      SECRET_KEY: test
+      POSTGRES_DB: cbr
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_HOST: test_postgres
+    steps:
+    # - uses: actions/checkout@v3.0.0
+    #   with:
+    #     fetch-depth: 50
+    - name: Checkout repo into container
+      run: |
+        mkdir /isolated_build/ ; cd /isolated_build/
+        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+        echo Cloning from: $httpsPathWithToken
+        git clone $httpsPathWithToken repo
+    - name: Install dependencies
+      run:  pip install -r requirements.txt
+      working-directory: ./server
+    - name: Check spacing
+      run:  python -m black --check .
+      working-directory: ./server
+    - name: Run `manage.py check`
+      run:  python manage.py check
+      working-directory: ./server
+    - name: Run Migrations
+      run:  python manage.py makemigrations --check
+      working-directory: ./server
+    - name: Run `manage.py test`
+      run:  python manage.py test
+      working-directory: ./server
 
 
   # export-image-tag-for-build-docker:
