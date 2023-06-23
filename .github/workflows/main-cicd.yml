@@ -232,20 +232,23 @@ jobs:
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
+    # - name: Checkout repo into container
+    #   run: |
+    #     mkdir /isolated_build/ ; cd /isolated_build/
+    #     httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+    #     echo Cloning from: $httpsPathWithToken
+    #     git clone $httpsPathWithToken repo
+    - uses: actions/checkout@v3.0.0
+      with:
+        fetch-depth: 50
     - uses: ./.github/workflows/export-image-tag #@b5cd22688a0294a86f425943b453d7a7b544375f
       with:
         config-path: docker
     - uses: actions/download-artifact@v3.0.1
       with:
-        path: /isolated_build/repo
+        name: build-web
     - run: |
-        set -x  # echo commands names
+        set -x                  # echo commands names
         ls -al
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
         docker images
@@ -255,7 +258,6 @@ jobs:
         docker logout
         docker images -a | grep -e "$HUB_REPO_BACKEND" -e "$HUB_REPO_FRONTEND" | awk '{print $3}' | xargs docker rmi --force
         docker images
-      working-directory: /isolated_build/repo
 
 
 #   test-common:
