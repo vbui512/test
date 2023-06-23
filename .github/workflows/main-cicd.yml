@@ -23,7 +23,7 @@ jobs:
       - name: dump
         run: |
           echo 'github.token         === ${{ github.token }}'
-          echo 'GITHUB_TOKEN         === ${{ GITHUB_TOKEN }}' 
+          echo 'secrets.GITHUB_TOKEN === ${{ secrets.GITHUB_TOKEN }}' 
           echo 'github.ref           === ${{ github.ref }}'
           echo 'github.repositoryUrl === ${{ github.repositoryUrl }}'
           echo 'github               === ${{ github }}'
@@ -47,7 +47,7 @@ jobs:
           mkdir /bawesome/
           cd /bawesome/
           # git clone https://<token>@github.com/<owner>/<repoName>.git
-          git clone https://${{ GITHUB_TOKEN }}@github.com/${{github.repository}}.git
+          git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
           ls
 
 
