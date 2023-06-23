@@ -46,15 +46,26 @@ jobs:
       run:  ls -lanR /github/home/
     - name: Install NPM globally
       run:  |
+        # <Begin Hack>
         # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
         # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
         rm -rf ./.npm-cache   || true # just to be sure
         mkdir -p ./.npm-cache || true # just to be sure
         npm cache clean -f
         export npm_config_cache=./.npm-cache
+        # <End Hack>
         npm install -g npm@$NPM_VERSION --loglevel=verbose
     - name: Run `npm ci`
-      run:  npm ci
+      run:  |
+        # <Begin Hack>
+        # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+        # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+        rm -rf ./.npm-cache   || true # just to be sure
+        mkdir -p ./.npm-cache || true # just to be sure
+        npm cache clean -f
+        export npm_config_cache=./.npm-cache
+        # <End Hack>
+        npm ci
       working-directory: ./common
     - name: Run `npx prettier`
       run:  npx prettier --check .
