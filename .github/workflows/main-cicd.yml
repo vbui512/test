@@ -168,7 +168,7 @@ jobs:
       with:
         name: "${{ github.job }}"
         retention-days: 7
-        path: web_build.tar.gz
+        path: /isolated_build/web_build.tar.gz
         
 
   build-server:
@@ -214,7 +214,6 @@ jobs:
       working-directory: /isolated_build/repo/server
     - name: "TODO: SKIPPING TEST OF 'manage.py test'"
       run: |
-        echo "::notice file=manage.py::SKIPPING 'manage.py test'"
         echo "::warning file=manage.py,title=SKIPPING TEST::Skipped manage.py test"
         # python manage.py test
       working-directory: /isolated_build/repo/server
