@@ -152,8 +152,8 @@ jobs:
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
         echo Cloning from: $httpsPathWithToken
         git clone $httpsPathWithToken repo
-        ls -la ./web/tsconfig.json
-        cat ./web/tsconfig.json
+        # ls -la ./web/tsconfig.json
+        # cat ./web/tsconfig.json
     - name: Install NPM globally
       run:  npm install -g npm@$NPM_VERSION
     - name: Build common
