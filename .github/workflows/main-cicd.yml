@@ -116,22 +116,15 @@ jobs:
         git clone $httpsPathWithToken repo
     - name: Install NPM globally & Build mobile
       run:  |
-        # # <Begin Hack for work around on cmpt-cicd>
-        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-        # rm -rf ./.npm-cache   || true     # just to be sure
-        # mkdir -p ./.npm-cache || true     # just to be sure
-        # npm cache clean -f
-        # export npm_config_cache=./.npm-cache
-        # # <End Hack>
         npm install -g npm@$NPM_VERSION
-        cd mobile
         npm uninstall @cbr/common
         COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
         npm install $COMMON_PACK_NAME
         npm ci
         npx prettier --check .
         npm run build dev
+      working-directory: /isolated_build/repo/mobile
+
 
   build-web:
     runs-on: [self-hosted, docker]
