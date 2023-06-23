@@ -241,7 +241,7 @@ jobs:
     - uses: actions/checkout@v3.0.0
       with:
         fetch-depth: 50
-    - uses: ./.github/workflows/export-image-tag #@b5cd22688a0294a86f425943b453d7a7b544375f
+    - uses: ./.github/workflows/export-image-tag.yml #@b5cd22688a0294a86f425943b453d7a7b544375f
       with:
         config-path: docker
     - uses: actions/download-artifact@v3.0.1
