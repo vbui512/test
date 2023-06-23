@@ -226,10 +226,10 @@ jobs:
     - name: Run Migrations
       run:  python manage.py makemigrations --check
       working-directory: ./server
-    - name: "TODO: SKIPPING TEST OF `manage.py test`"
+    - name: "TODO: SKIPPING TEST OF 'manage.py test'"
       run: |
-        echo "::notice SKIPPING TEST OF `manage.py test`"
-        echo "::warning SKIPPING TEST OF `manage.py test`"
+        echo "::notice SKIPPING TEST OF 'manage.py test'"
+        echo "::warning SKIPPING TEST OF 'manage.py test'"
         # python manage.py test
       working-directory: ./server
 
