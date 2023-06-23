@@ -93,13 +93,13 @@ jobs:
   #       # # <End Hack>
   #       npm install -g npm@$NPM_VERSION --loglevel=verbose
   #       npm ci
-  #     working-directory: ./common
+  #     working-directory: /isolated_build/common
   #   - name: Run 'npx prettier'
   #     run:  npx prettier --check .
-  #     working-directory: ./common
+  #     working-directory: /isolated_build/common
   #   - name: Run 'npx tsc'
   #     run:  npx tsc
-  #     working-directory: ./common
+  #     working-directory: /isolated_build/common
 
   # build-mobile:
   #   runs-on: [self-hosted, docker]
@@ -158,10 +158,10 @@ jobs:
       run:  npm install -g npm@$NPM_VERSION
     - name: Build common
       run:  npm ci
-      working-directory: ./common
+      working-directory: /isolated_build/common
     - name: Build web
       run:  npm ci
-      working-directory: ./web
+      working-directory: /isolated_build/web
     - name: Run 'npx prettier'
       run:  |
         echo Prettier output:
@@ -174,12 +174,12 @@ jobs:
         diff new.xxx tsconfig.json
         echo Running prettier --check
         npx prettier --check .
-      working-directory: ./web
+      working-directory: /isolated_build/web
     - name: Compress files
       run:  |
         GENERATE_SOURCEMAP=false npm run build
         cd build && tar -czvf ../../web_build.tar.gz .
-      working-directory: ./web
+      working-directory: /isolated_build/web
     - uses: actions/upload-artifact@v3.1.1
       if: success()
       with:
@@ -219,22 +219,22 @@ jobs:
         git clone $httpsPathWithToken repo
     - name: Install dependencies
       run:  pip install -r requirements.txt
-      working-directory: ./server
+      working-directory: /isolated_build/server
     - name: Check spacing
       run:  python -m black --check .
-      working-directory: ./server
+      working-directory: /isolated_build/server
     - name: Run 'manage.py check'
       run:  python manage.py check
-      working-directory: ./server
+      working-directory: /isolated_build/server
     - name: Run Migrations
       run:  python manage.py makemigrations --check
-      working-directory: ./server
+      working-directory: /isolated_build/server
     - name: "TODO: SKIPPING TEST OF 'manage.py test'"
       run: |
         echo "::notice file=manage.py::SKIPPING 'manage.py test'"
         echo "::warning file=manage.py,title=SKIPPING TEST::Skipped manage.py test"
         # python manage.py test
-      working-directory: ./server
+      working-directory: /isolated_build/server
 
 
 
