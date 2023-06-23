@@ -152,24 +152,22 @@ jobs:
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
         echo Cloning from: $httpsPathWithToken
         git clone $httpsPathWithToken repo
-    - name: Install NPM globally & Build web
+    - name: Install NPM globally
+      run:  npm install -g npm@$NPM_VERSION
+    - name: Build common
+      run:  npm ci
+      working-directory: ./common
+    - name: Build web
+      run:  npm ci
+      working-directory: ./web
+    - name: Run `npx prettier`
+      run:  npx prettier --check .
+      working-directory: ./web
+    - name: Compress files
       run:  |
-        # # <Begin Hack for work around on cmpt-cicd>
-        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-        # rm -rf ./.npm-cache   || true     # just to be sure
-        # mkdir -p ./.npm-cache || true     # just to be sure
-        # npm cache clean -f
-        # export npm_config_cache=./.npm-cache
-        # # <End Hack>
-        npm install -g npm@$NPM_VERSION
-        cd common
-        npm ci
-        cd ../web
-        npm ci
-        npx prettier --check .
         GENERATE_SOURCEMAP=false npm run build
         cd build && tar -czvf ../../web_build.tar.gz .
+      working-directory: ./web
     - uses: actions/upload-artifact@v3.1.1
       if: success()
       with:
