@@ -77,10 +77,23 @@ jobs:
           mkdir /bawesome/
           cd /bawesome/
           # git clone https://<token>@github.com/<owner>/<repoName>.git
-          echo git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
-          echo git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
-          git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
+
+          # echo git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
+          # git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
+
+
+          httpsPathWithToken=`echo $in | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.repository}}@" $1; }'`
+          echo Cloning from: $httpsPathWithToken
+          git clone $httpsPathWithToken repo
+
           ls
+          cd ./repo/
+          echo "In Repo 'ls'"
+          ls
+          git checkout ${{github.sha}}
+          echo "In Repo after checkout specific product 'ls'"
+          ls
+
 
 
 
