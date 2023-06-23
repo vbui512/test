@@ -16,21 +16,51 @@ env:
   NPM_VERSION: 7.19.0
 jobs:
 
-  dump-from-runner:
-    runs-on: ubuntu-latest
+  # dump-from-runner:
+  #   runs-on: ubuntu-latest
 
+  #   steps:
+  #     - name: dump
+  #       run: |
+  #         echo 'github.token         === ${{ github.token }}'
+  #         echo 'secrets.GITHUB_TOKEN === ${{ secrets.GITHUB_TOKEN }}' 
+  #         echo 'github.ref           === ${{ github.ref }}'
+  #         echo 'github.repositoryUrl === ${{ github.repositoryUrl }}'
+  #         echo 'github               === ${{ github }}'
+  #         echo 'github.workspace === ${{ github.workspace }}'
+  #         echo "GITHUB_WORKSPACE === $GITHUB_WORKSPACE"
+  #         echo 'runner.workspace === ${{ runner.workspace }}'
+  #         echo "RUNNER_WORKSPACE === $RUNNER_WORKSPACE"
+
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
     steps:
-      - name: dump
-        run: |
-          echo 'github.token         === ${{ github.token }}'
-          echo 'secrets.GITHUB_TOKEN === ${{ secrets.GITHUB_TOKEN }}' 
-          echo 'github.ref           === ${{ github.ref }}'
-          echo 'github.repositoryUrl === ${{ github.repositoryUrl }}'
-          echo 'github               === ${{ github }}'
-          echo 'github.workspace === ${{ github.workspace }}'
-          echo "GITHUB_WORKSPACE === $GITHUB_WORKSPACE"
-          echo 'runner.workspace === ${{ runner.workspace }}'
-          echo "RUNNER_WORKSPACE === $RUNNER_WORKSPACE"
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo '$GITHUB_CONTEXT'
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo '$JOB_CONTEXT'
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo '$STEPS_CONTEXT'
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo '$RUNNER_CONTEXT'
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo '$STRATEGY_CONTEXT'
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo '$MATRIX_CONTEXT'
+
+      
   dump-from-container:    
     runs-on: ubuntu-latest
     container:
@@ -47,6 +77,8 @@ jobs:
           mkdir /bawesome/
           cd /bawesome/
           # git clone https://<token>@github.com/<owner>/<repoName>.git
+          echo git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
+          echo git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
           git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}.git
           ls
 
