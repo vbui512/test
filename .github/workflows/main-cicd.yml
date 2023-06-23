@@ -14,24 +14,10 @@ env:
   STG_BRANCH: staging
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
-  npm_config_cache: ./.npm-cache
+  # Hack for keeping npm's cache out of home directory (mounted from host)
+  # otherwise, NPM gives EACCES error trying to mkdir /github/home/.npm
+  npm_config_cache: /isolated_build/.npm-cache    
 jobs:
-
-  # dump-from-runner:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: dump
-  #       run: |
-  #         echo 'github.token         === ${{ github.token }}'
-  #         echo 'secrets.GITHUB_TOKEN === ${{ secrets.GITHUB_TOKEN }}' 
-  #         echo 'github.ref           === ${{ github.ref }}'
-  #         echo 'github.repositoryUrl === ${{ github.repositoryUrl }}'
-  #         echo 'github               === ${{ github }}'
-  #         echo 'github.workspace === ${{ github.workspace }}'
-  #         echo "GITHUB_WORKSPACE === $GITHUB_WORKSPACE"
-  #         echo 'runner.workspace === ${{ runner.workspace }}'
-  #         echo "RUNNER_WORKSPACE === $RUNNER_WORKSPACE"
 
   # dump_contexts_to_log:
   #   runs-on: ubuntu-latest
@@ -61,55 +47,26 @@ jobs:
   #         MATRIX_CONTEXT: ${{ toJson(matrix) }}
   #       run: echo '$MATRIX_CONTEXT'
 
-      
-  # dump-from-container:    
-  #   runs-on: ubuntu-latest
+
+  # build-info:
+  #   runs-on: [self-hosted, docker]
   #   container:
-  #     image: node:14.16
-      
+  #     image: node:14
+  #   if: ${{ github.event_name }} != "push"
+  #   timeout-minutes: 60
   #   steps:
   #     - name: Checkout repo into container
   #       run: |
-  #         # Clone into new /isolated_build/ folder
   #         mkdir /isolated_build/ ; cd /isolated_build/
-  #         # git clone https://<token>@github.com/<owner>/<repoName>.git
   #         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
   #         echo Cloning from: $httpsPathWithToken
   #         git clone $httpsPathWithToken repo
 
-  #         ls
-  #         cd ./repo/
-  #         echo "In Repo 'ls'"
-  #         ls
-  #         git checkout ${{github.sha}}
-  #         echo "In Repo after checkout specific product 'ls'"
-  #         ls
-
-
-
-
-  build-info:
-    runs-on: [self-hosted, docker]
-    container:
-      image: node:14
-    if: ${{ github.event_name }} != "push"
-    timeout-minutes: 60
-    steps:
-    # - uses: actions/checkout@v3.0.0
-    #   with:
-    #     fetch-depth: 50
-      - name: Checkout repo into container
-        run: |
-          mkdir /isolated_build/ ; cd /isolated_build/
-          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-          echo Cloning from: $httpsPathWithToken
-          git clone $httpsPathWithToken repo
-
-      - run: |
-          echo "This task give the CI/CD pipeline something to (almost always) run."
-          echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-          echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-          echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+  #     - run: |
+  #         echo "This task give the CI/CD pipeline something to (almost always) run."
+  #         echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+  #         echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+  #         echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
         
   build-common:
     runs-on: [self-hosted, docker]
@@ -118,9 +75,6 @@ jobs:
     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    # - uses: actions/checkout@v3.0.0
-    #   with:
-    #     fetch-depth: 50
     - name: Checkout repo into container
       run: |
         mkdir /isolated_build/ ; cd /isolated_build/
@@ -147,40 +101,37 @@ jobs:
       run:  npx tsc
       working-directory: ./common
 
-  build-mobile:
-    runs-on: [self-hosted, docker]
-    container:
-      image: node:14
-    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-    timeout-minutes: 60
-    steps:
-    # - uses: actions/checkout@v3.0.0
-    #   with:
-    #     fetch-depth: 50
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
-    - name: Install NPM globally & Build mobile
-      run:  |
-        # # <Begin Hack for work around on cmpt-cicd>
-        # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
-        # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
-        # rm -rf ./.npm-cache   || true     # just to be sure
-        # mkdir -p ./.npm-cache || true     # just to be sure
-        # npm cache clean -f
-        # export npm_config_cache=./.npm-cache
-        # # <End Hack>
-        npm install -g npm@$NPM_VERSION
-        cd mobile
-        npm uninstall @cbr/common
-        COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
-        npm install $COMMON_PACK_NAME
-        npm ci
-        npx prettier --check .
-        npm run build dev
+  # build-mobile:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: node:14
+  #   if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+  #   timeout-minutes: 60
+  #   steps:
+  #   - name: Checkout repo into container
+  #     run: |
+  #       mkdir /isolated_build/ ; cd /isolated_build/
+  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #       echo Cloning from: $httpsPathWithToken
+  #       git clone $httpsPathWithToken repo
+  #   - name: Install NPM globally & Build mobile
+  #     run:  |
+  #       # # <Begin Hack for work around on cmpt-cicd>
+  #       # # NPM gives EACCES error trying to mkdir /github/home/.npm; Workaround from
+  #       # # https://github.com/npm/cli/issues/5114#issuecomment-1275657155
+  #       # rm -rf ./.npm-cache   || true     # just to be sure
+  #       # mkdir -p ./.npm-cache || true     # just to be sure
+  #       # npm cache clean -f
+  #       # export npm_config_cache=./.npm-cache
+  #       # # <End Hack>
+  #       npm install -g npm@$NPM_VERSION
+  #       cd mobile
+  #       npm uninstall @cbr/common
+  #       COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
+  #       npm install $COMMON_PACK_NAME
+  #       npm ci
+  #       npx prettier --check .
+  #       npm run build dev
 
   build-web:
     runs-on: [self-hosted, docker]
@@ -195,9 +146,6 @@ jobs:
       || ${{ github.event_name }} == "web"
       timeout-minutes: 60
     steps:
-    # - uses: actions/checkout@v3.0.0
-    #   with:
-    #     fetch-depth: 50
     - name: Checkout repo into container
       run: |
         mkdir /isolated_build/ ; cd /isolated_build/
@@ -230,54 +178,58 @@ jobs:
         path: web_build.tar.gz
         
 
-  build-server:
-    runs-on: [self-hosted, docker]
-    container:
-      image: python:3.9.1-buster
-    if: |
-      ${{ github.event.pull_request.number }} != null) 
-      || ${{ github.ref }} == $DEV_BRANCH 
-      || ${{ github.ref }} == $STG_BRANCH 
-      || ${{ github.ref }} == $PROD_BRANCH) 
-      || ${{ github.event_name }} == "schedule" 
-      || ${{ github.event_name }} == "web"
-    timeout-minutes: 60
-    services:
-      test_postgres:
-        image: postgres:13.1-alpine
-    env:
-      DOMAIN: example.com
-      SECRET_KEY: test
-      POSTGRES_DB: cbr
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_HOST: test_postgres
-    steps:
-    # - uses: actions/checkout@v3.0.0
-    #   with:
-    #     fetch-depth: 50
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
-    - name: Install dependencies
-      run:  pip install -r requirements.txt
-      working-directory: ./server
-    - name: Check spacing
-      run:  python -m black --check .
-      working-directory: ./server
-    - name: Run `manage.py check`
-      run:  python manage.py check
-      working-directory: ./server
-    - name: Run Migrations
-      run:  python manage.py makemigrations --check
-      working-directory: ./server
-    - name: "TODO: SKIPPING TEST OF `manage.py test`"
-      run: |
-        # python manage.py test
-      working-directory: ./server
+  # build-server:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: python:3.9.1-buster
+  #   if: |
+  #     ${{ github.event.pull_request.number }} != null) 
+  #     || ${{ github.ref }} == $DEV_BRANCH 
+  #     || ${{ github.ref }} == $STG_BRANCH 
+  #     || ${{ github.ref }} == $PROD_BRANCH) 
+  #     || ${{ github.event_name }} == "schedule" 
+  #     || ${{ github.event_name }} == "web"
+  #   timeout-minutes: 60
+  #   services:
+  #     test_postgres:
+  #       image: postgres:13.1-alpine
+  #   env:
+  #     DOMAIN: example.com
+  #     SECRET_KEY: test
+  #     POSTGRES_DB: cbr
+  #     POSTGRES_USER: test
+  #     POSTGRES_PASSWORD: test
+  #     POSTGRES_HOST: test_postgres
+  #   steps:
+  #   - name: Checkout repo into container
+  #     run: |
+  #       mkdir /isolated_build/ ; cd /isolated_build/
+  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #       echo Cloning from: $httpsPathWithToken
+  #       git clone $httpsPathWithToken repo
+  #   - name: Install dependencies
+  #     run:  pip install -r requirements.txt
+  #     working-directory: ./server
+  #   - name: Check spacing
+  #     run:  python -m black --check .
+  #     working-directory: ./server
+  #   - name: Run `manage.py check`
+  #     run:  python manage.py check
+  #     working-directory: ./server
+  #   - name: Run Migrations
+  #     run:  python manage.py makemigrations --check
+  #     working-directory: ./server
+  #   - name: "TODO: SKIPPING TEST OF `manage.py test`"
+  #     run: |
+  #       # python manage.py test
+  #     working-directory: ./server
+
+
+
+
+
+
+
 
 
   # export-image-tag-for-build-docker:
