@@ -241,15 +241,13 @@ jobs:
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    # UN-NEEDED: Export image tag needs the checked out code, so we have to do it there.
-    # - uses: actions/checkout@v3.0.0
-    #   with:
-    #     fetch-depth: 50
-
-    # RE-ENABLE THIS (debug only commented out)
-    # - uses: actions/download-artifact@v3.0.1
-    #   with:
-    #     name: build-web
+    # Checkout the code, not into a container, because all work here is not in a container
+    - uses: actions/checkout@v3.0.0
+      with:
+        fetch-depth: 50
+    - uses: actions/download-artifact@v3.0.1
+      with:
+        name: build-web
     - run: |
         set -x                  # echo commands names
         ls -al
