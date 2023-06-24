@@ -233,7 +233,7 @@ jobs:
     with:
       runner_tag: docker
       ci_commit_sha: ${{ github.sha }}
-      secrets: inherit
+    secrets: inherit
       
   build-docker-publish-docker-images:
     # needs: [build-common, build-mobile, build-web, build-server, call_export_image_tag]
