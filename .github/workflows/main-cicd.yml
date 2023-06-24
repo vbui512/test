@@ -253,6 +253,7 @@ jobs:
     #     name: build-web
     - run: |
         set -x                  # echo commands names
+        echo "IMAGE_TAG set by reusable workflow: '$IMAGE_TAG'"
         ls -al
         tar -czvf web_build.tar.gz ./caddy/  # DELETE THIS! TESTING ONLY
 
