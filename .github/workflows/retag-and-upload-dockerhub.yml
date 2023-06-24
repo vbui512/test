@@ -3,9 +3,6 @@ name: retag-and-upload-dockerhub
 on:
   workflow_call:
     inputs:
-      runner_tag:
-        required: true
-        type: string
       IMAGE_TAG:
         required: true
         type: string
@@ -13,7 +10,13 @@ on:
         required: true
         type: string
     secrets:
-      envPAT:
+      HUB_REPO_BACKEND:
+        required: false
+      HUB_REPO_FRONTEND:
+        required: false
+      HUB_TOKEN:
+        required: false
+      HUB_USER:
         required: false
 env:
   HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
@@ -22,7 +25,6 @@ env:
   HUB_USER: "${{ secrets.HUB_USER }}"
 jobs:
   retag-and-upload-dockerhub:
-    runs-on: [self-hosted, '${{ runner_tag }}']
     steps:
     - name: Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'
       run: |
