@@ -225,6 +225,32 @@ jobs:
 
 
 
+  export-image-tag:
+    runs-on: [self-hosted, docker]
+    outputs:
+      image_tag: ${{ steps.set_step.outputs.tag }}
+    steps:
+    - uses: actions/checkout@v3.5.0
+      # Checkout the code, not into a container, because all work here is not in a container
+      with:
+        fetch-depth: 50
+    - id: set_step
+      run: |
+        export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
+        echo "IMAGE_TAG = '$IMAGE_TAG'"
+        echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+
+
+
+  test-consumer:
+    runs-on: [self-hosted, docker]
+    needs: [export-image-tag]
+    env:
+      IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
+    steps:
+    - name: Test access tag
+      run: echo "IMAGE_TAG = '$IMAGE_TAG'"
 
       
   # build-docker-publish-docker-images:
@@ -295,33 +321,6 @@ jobs:
 
     
 
-  export-image-tag:
-    runs-on: [self-hosted, docker]
-    outputs:
-      image_tag: ${{ steps.set_step.outputs.tag }}
-    steps:
-    - uses: actions/checkout@v3.5.0
-      # Checkout the code, not into a container, because all work here is not in a container
-      with:
-        fetch-depth: 50
-    - name: Set the image tag
-      id: set_step
-      run: |
-        export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
-        echo "IMAGE_TAG = '$IMAGE_TAG'"
-        echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
-
-
-
-
-  test-consumer:
-    runs-on: [self-hosted, docker]
-    needs: [export-image-tag]
-    steps:
-    - name: Test access tag
-      env:
-        IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
-      run: echo "IMAGE_TAG = '$IMAGE_TAG'"
     
     
   # dev-server-deploy-from-dockerhub:
