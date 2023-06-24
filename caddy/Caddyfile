@@ -1,4 +1,4 @@
-{example.com} {
+{cbr-dev.cmpt.sfu.ca} {
     encode gzip
 
     header {
