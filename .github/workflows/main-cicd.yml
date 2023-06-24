@@ -249,19 +249,27 @@ jobs:
     #   with:
     #     name: build-web
     - run: |
-        set -x                  # echo commands names
-        ls -al
-        tar -czvf web_build.tar.gz ./caddy/  # DELETE THIS! TESTING ONLY
+        tar -czvf web_build.tar.gz ./caddy/  # DELETE THIS! TESTING ONLY        
         
+    - name: Setup IMAGE_TAG
+      run: |
         export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
         echo "IMAGE_TAG = '$IMAGE_TAG'"
-
-        docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
+        echo "Files in current folder"
+        ls -al
+    - name: Docker compose - Build
+      run:  docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
+    - name: View docker output
+      run: |
         docker images
+    - name: Push to Docker Hub
+      run: |        
         docker login -u $HUB_USER -p $HUB_TOKEN
         docker push $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
         docker push $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
         docker logout
+    - name: Cleanup
+      run: |
         docker images -a | grep -e "$HUB_REPO_BACKEND" -e "$HUB_REPO_FRONTEND" | awk '{print $3}' | xargs docker rmi --force
         docker images
 
