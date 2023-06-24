@@ -148,8 +148,6 @@ jobs:
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
         echo Cloning from: $httpsPathWithToken
         git clone $httpsPathWithToken repo
-        # ls -la ./web/tsconfig.json
-        # cat ./web/tsconfig.json
     - name: Install NPM
       run:  npm install -g npm@$NPM_VERSION
     - name: Build common
@@ -237,8 +235,8 @@ jobs:
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    # Checkout the code, not into a container, because all work here is not in a container
     - uses: actions/checkout@v3.5.0
+      # Checkout the code, not into a container, because all work here is not in a container
       with:
         fetch-depth: 50
     - uses: actions/download-artifact@v3.0.1
@@ -264,7 +262,7 @@ jobs:
         docker push $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
         docker push $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
         docker logout
-        echo "::notice file=main-cicd.yml::Pushed to Docker Hub with IMAGE_TAG '${{IMAGE_TAG}}'"
+        echo "::notice file=main-cicd.yml::Pushed to Docker Hub with IMAGE_TAG '$IMAGE_TAG'"
 
         echo "Cleaning up..."
         docker images -a | grep -e "$HUB_REPO_BACKEND" -e "$HUB_REPO_FRONTEND" | awk '{print $3}' | xargs docker rmi --force
