@@ -353,9 +353,9 @@ jobs:
       BRANCH_TAG: dev
       IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
-      with:
-        IMAGE_TAG:  $IMAGE_TAG
-        BRANCH_TAG: dev
+    with:
+      IMAGE_TAG:  $IMAGE_TAG
+      BRANCH_TAG: dev
     secrets: inherit
       
 
