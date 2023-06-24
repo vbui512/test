@@ -10,7 +10,7 @@ on:
         required: true
         type: string
     secrets:
-      token:
+      secrets:
         required: true      
 env:
   HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
