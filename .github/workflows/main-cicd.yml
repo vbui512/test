@@ -92,11 +92,14 @@ jobs:
         npm install -g npm@$NPM_VERSION --loglevel=verbose
         npm ci
       working-directory: /isolated_build/repo/common
-    - name: Run 'npx prettier'
+    - name: Check code formatting
       run:  npx prettier --check .
       working-directory: /isolated_build/repo/common
-    - name: Run 'npx tsc'
+    - name: Run TypeScript compiler
       run:  npx tsc
+      working-directory: /isolated_build/repo/common
+    - name: Run tests on ./common/
+      run:  npm run test-ci
       working-directory: /isolated_build/repo/common
 
   build-mobile:
@@ -147,7 +150,7 @@ jobs:
         git clone $httpsPathWithToken repo
         # ls -la ./web/tsconfig.json
         # cat ./web/tsconfig.json
-    - name: Install NPM globally
+    - name: Install NPM
       run:  npm install -g npm@$NPM_VERSION
     - name: Build common
       run:  npm ci
@@ -155,9 +158,12 @@ jobs:
     - name: Build web
       run:  npm ci
       working-directory: /isolated_build/repo/web
-    - name: Run 'npx prettier'
+    - name: Check code formatting
       run:  npx prettier --check .
       working-directory: /isolated_build/repo/web
+    - name: Check caddy/Caddyfile
+      run:  caddy validate --config caddy/Caddyfile
+      working-directory: /isolated_build/repo/
     - name: Compress files
       run:  |
         GENERATE_SOURCEMAP=false npm run build
@@ -232,7 +238,7 @@ jobs:
     timeout-minutes: 60
     steps:
     # Checkout the code, not into a container, because all work here is not in a container
-    - uses: actions/checkout@v3.0.0
+    - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 50
     - uses: actions/download-artifact@v3.0.1
@@ -264,26 +270,6 @@ jobs:
         docker images
 
 
-#   test-common:
-#     needs: [build-common]
-#     runs-on: [self-hosted, docker]
-#     container:
-#       image: node:14
-#     if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v3.0.0
-#       with:
-#         fetch-depth: 50
-#     - uses: actions/download-artifact@v3.0.1
-#     - run: |
-#         npm install -g npm@$NPM_VERSION
-#         cd common
-#         npm ci
-#         npm run test-ci
-#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
-#     # 'artifacts.cobertura' was not transformed because there is no suitable equivalent in GitHub Actions
-  
 #   test-caddy:
 #     needs: build-docker-publish-docker-images
 #     runs-on: [self-hosted, docker]
