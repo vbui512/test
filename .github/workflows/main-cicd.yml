@@ -21,6 +21,7 @@ env:
   STG_BRANCH: staging
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
+  DOMAIN: "example.com"
   # Hack for keeping npm's cache out of home directory (mounted from host)
   # otherwise, NPM gives EACCES error trying to mkdir /github/home/.npm
   npm_config_cache: /isolated_build/.npm-cache    
@@ -262,6 +263,10 @@ jobs:
     env:
       IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
     steps:
+    - uses: actions/checkout@v3.5.0
+      # Checkout the code, not into a container, because all work here is not in a container
+      with:
+        fetch-depth: 50
     # - name: Get build products
     #   uses: actions/download-artifact@v3.0.1
     #   with:
