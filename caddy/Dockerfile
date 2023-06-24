@@ -2,7 +2,6 @@ FROM caddy:2.4.6
 
 # these paths are relative to the project root, not this folder
 COPY caddy/Caddyfile /etc/caddy/Caddyfile
-RUN caddy validate --config /etc/caddy/Caddyfile
 
 # Extract website (avoid ADD: unpredictable, and seems not to extract on CI/CD server July 2022)
 # Note: this does leave behind the extra tar.gz file in a layer

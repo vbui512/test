@@ -1,4 +1,4 @@
-{cbr-dev.cmpt.sfu.ca} {
+{$DOMAIN} {
     encode gzip
 
     header {

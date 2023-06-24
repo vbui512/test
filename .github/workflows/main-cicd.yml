@@ -21,7 +21,6 @@ env:
   STG_BRANCH: staging
   PROD_BRANCH: production
   NPM_VERSION: 7.19.0
-  DOMAIN: "example.com"
   # Hack for keeping npm's cache out of home directory (mounted from host)
   # otherwise, NPM gives EACCES error trying to mkdir /github/home/.npm
   npm_config_cache: /isolated_build/.npm-cache    
@@ -284,7 +283,6 @@ jobs:
         echo "IMAGE_TAG = '$IMAGE_TAG'"
     - name: Running 'docker compose'...
       run: |
-        export DOMAIN=$DOMAIN
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
         docker images
     - name: Pushing to docker hub...
