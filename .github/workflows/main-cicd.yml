@@ -54,25 +54,25 @@ jobs:
   #       run: echo '$MATRIX_CONTEXT'
 
 
-  build-info:
-    runs-on: [self-hosted, docker]
-    container:
-      image: node:14
-    if: ${{ github.event_name }} != "push"
-    timeout-minutes: 60
-    steps:
-      - name: Checkout repo into container
-        run: |
-          mkdir /isolated_build/ ; cd /isolated_build/
-          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-          echo Cloning from: $httpsPathWithToken
-          git clone $httpsPathWithToken repo
+  # build-info:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: node:14
+  #   if: ${{ github.event_name }} != "push"
+  #   timeout-minutes: 60
+  #   steps:
+  #     - name: Checkout repo into container
+  #       run: |
+  #         mkdir /isolated_build/ ; cd /isolated_build/
+  #         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #         echo Cloning from: $httpsPathWithToken
+  #         git clone $httpsPathWithToken repo
 
-      - run: |
-          echo "This task give the CI/CD pipeline something to (almost always) run."
-          echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-          echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-          echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+  #     - run: |
+  #         echo "This task give the CI/CD pipeline something to (almost always) run."
+  #         echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+  #         echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+  #         echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
         
   # build-common:
   #   runs-on: [self-hosted, docker]
@@ -181,15 +181,12 @@ jobs:
     env:
       DOMAIN: example.com
     steps:
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
+    - uses: actions/checkout@v3.5.0
+      # Checkout the code, not into a container, because container does not contain git
+      with:
+        fetch-depth: 50
     - name: Validate Caddyfile
       run: caddy validate --config caddy/Caddyfile
-      working-directory: /isolated_build/repo/
 
 
   # build-server:
