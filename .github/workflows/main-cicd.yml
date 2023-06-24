@@ -310,7 +310,7 @@ jobs:
     - name: Test access tag
       env:
         IMAGE_TAG: ${{ needs.test-producer.outputs.image_tag}}
-      run: echo "IMAGE_TAGZ = '$IMAGE_TAGZ'"
+      run: echo "IMAGE_TAG = '$IMAGE_TAG'"
     
     
   # dev-server-deploy-from-dockerhub:
