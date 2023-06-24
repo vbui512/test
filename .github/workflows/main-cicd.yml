@@ -277,25 +277,25 @@ jobs:
         mkdir -p fakestuff/
         touch fakestuff/nothing.txt
         tar -czvf web_build.tar.gz ./fakestuff/
-    - name: 1) Build docker image, 2) Push to docker hub
+    - name: Printing debug information...
       run: |
         echo "Files in current folder before building image"
         ls -al
-
         echo "IMAGE_TAG = '$IMAGE_TAG'"
-
-        echo "Running 'docker compose'..."
+    - name: Running 'docker compose'...
+      run: |
+        export DOMAIN=$DOMAIN
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
         docker images
-
-        echo "Pushing to docker hub..."
+    - name: Pushing to docker hub...
+      run: |
         docker login -u $HUB_USER -p $HUB_TOKEN
         docker push $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
         docker push $HUB_USER/$HUB_REPO_FRONTEND:$IMAGE_TAG
         docker logout
         echo "::notice file=main-cicd.yml::Pushed to Docker Hub with IMAGE_TAG '$IMAGE_TAG'"
-
-        echo "Cleaning up..."
+    - name: Cleaning up...
+      run: |
         docker images -a | grep -e "$HUB_REPO_BACKEND" -e "$HUB_REPO_FRONTEND" | awk '{print $3}' | xargs docker rmi --force
         docker images
 
