@@ -54,169 +54,169 @@ jobs:
   #       run: echo '$MATRIX_CONTEXT'
 
 
-  build-info:
-    runs-on: [self-hosted, docker]
-    container:
-      image: node:14
-    if: ${{ github.event_name }} != "push"
-    timeout-minutes: 60
-    steps:
-      - name: Checkout repo into container
-        run: |
-          mkdir /isolated_build/ ; cd /isolated_build/
-          httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-          echo Cloning from: $httpsPathWithToken
-          git clone $httpsPathWithToken repo
+  # build-info:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: node:14
+  #   if: ${{ github.event_name }} != "push"
+  #   timeout-minutes: 60
+  #   steps:
+  #     - name: Checkout repo into container
+  #       run: |
+  #         mkdir /isolated_build/ ; cd /isolated_build/
+  #         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #         echo Cloning from: $httpsPathWithToken
+  #         git clone $httpsPathWithToken repo
 
-      - run: |
-          echo "This task give the CI/CD pipeline something to (almost always) run."
-          echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-          echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-          echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+  #     - run: |
+  #         echo "This task give the CI/CD pipeline something to (almost always) run."
+  #         echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+  #         echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+  #         echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
         
-  build-common:
-    runs-on: [self-hosted, docker]
-    container:
-      image: node:14
-    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-    timeout-minutes: 60
-    steps:
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
-    - name: Install NPM globally & Run 'npm ci'
-      run:  |
-        npm install -g npm@$NPM_VERSION --loglevel=verbose
-        npm ci
-      working-directory: /isolated_build/repo/common
-    - name: Run 'npx prettier'
-      run:  npx prettier --check .
-      working-directory: /isolated_build/repo/common
-    - name: Run 'npx tsc'
-      run:  npx tsc
-      working-directory: /isolated_build/repo/common
+  # build-common:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: node:14
+  #   if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+  #   timeout-minutes: 60
+  #   steps:
+  #   - name: Checkout repo into container
+  #     run: |
+  #       mkdir /isolated_build/ ; cd /isolated_build/
+  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #       echo Cloning from: $httpsPathWithToken
+  #       git clone $httpsPathWithToken repo
+  #   - name: Install NPM globally & Run 'npm ci'
+  #     run:  |
+  #       npm install -g npm@$NPM_VERSION --loglevel=verbose
+  #       npm ci
+  #     working-directory: /isolated_build/repo/common
+  #   - name: Run 'npx prettier'
+  #     run:  npx prettier --check .
+  #     working-directory: /isolated_build/repo/common
+  #   - name: Run 'npx tsc'
+  #     run:  npx tsc
+  #     working-directory: /isolated_build/repo/common
 
-  build-mobile:
-    runs-on: [self-hosted, docker]
-    container:
-      image: node:14
-    if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
-    timeout-minutes: 60
-    steps:
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
-    - name: Install NPM globally & Build mobile
-      run:  |
-        set -x  # echo commands names
+  # build-mobile:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: node:14
+  #   if: ${{ github.event.pull_request.number }} != null) || ${{ github.event_name }} == "schedule" || ${{ github.event_name }} == "web"
+  #   timeout-minutes: 60
+  #   steps:
+  #   - name: Checkout repo into container
+  #     run: |
+  #       mkdir /isolated_build/ ; cd /isolated_build/
+  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #       echo Cloning from: $httpsPathWithToken
+  #       git clone $httpsPathWithToken repo
+  #   - name: Install NPM globally & Build mobile
+  #     run:  |
+  #       set -x  # echo commands names
 
-        npm install -g npm@$NPM_VERSION
-        npm uninstall @cbr/common
-        COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
-        npm install $COMMON_PACK_NAME
-        npm ci
-        npx prettier --check .
-        npm run build dev
-      working-directory: /isolated_build/repo/mobile
+  #       npm install -g npm@$NPM_VERSION
+  #       npm uninstall @cbr/common
+  #       COMMON_PACK_NAME=$(npm pack ../common | tail -n 1)
+  #       npm install $COMMON_PACK_NAME
+  #       npm ci
+  #       npx prettier --check .
+  #       npm run build dev
+  #     working-directory: /isolated_build/repo/mobile
 
 
-  build-web:
-    runs-on: [self-hosted, docker]
-    container:
-      image: node:14
-    if: |
-      ${{ github.event.pull_request.number }} != null) 
-      || ${{ github.ref }} == $DEV_BRANCH 
-      || ${{ github.ref }} == $STG_BRANCH 
-      || ${{ github.ref }} == $PROD_BRANCH) 
-      || ${{ github.event_name }} == "schedule" 
-      || ${{ github.event_name }} == "web"
-      timeout-minutes: 60
-    steps:
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
-        # ls -la ./web/tsconfig.json
-        # cat ./web/tsconfig.json
-    - name: Install NPM globally
-      run:  npm install -g npm@$NPM_VERSION
-    - name: Build common
-      run:  npm ci
-      working-directory: /isolated_build/repo/common
-    - name: Build web
-      run:  npm ci
-      working-directory: /isolated_build/repo/web
-    - name: Run 'npx prettier'
-      run:  npx prettier --check .
-      working-directory: /isolated_build/repo/web
-    - name: Compress files
-      run:  |
-        GENERATE_SOURCEMAP=false npm run build
-        cd build && tar -czvf ../../web_build.tar.gz .
-      working-directory: /isolated_build/repo/web
-    - uses: actions/upload-artifact@v3.1.1
-      if: success()
-      with:
-        name: "${{ github.job }}"
-        retention-days: 7
-        path: /isolated_build/repo/web_build.tar.gz
+  # build-web:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: node:14
+  #   if: |
+  #     ${{ github.event.pull_request.number }} != null) 
+  #     || ${{ github.ref }} == $DEV_BRANCH 
+  #     || ${{ github.ref }} == $STG_BRANCH 
+  #     || ${{ github.ref }} == $PROD_BRANCH) 
+  #     || ${{ github.event_name }} == "schedule" 
+  #     || ${{ github.event_name }} == "web"
+  #     timeout-minutes: 60
+  #   steps:
+  #   - name: Checkout repo into container
+  #     run: |
+  #       mkdir /isolated_build/ ; cd /isolated_build/
+  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #       echo Cloning from: $httpsPathWithToken
+  #       git clone $httpsPathWithToken repo
+  #       # ls -la ./web/tsconfig.json
+  #       # cat ./web/tsconfig.json
+  #   - name: Install NPM globally
+  #     run:  npm install -g npm@$NPM_VERSION
+  #   - name: Build common
+  #     run:  npm ci
+  #     working-directory: /isolated_build/repo/common
+  #   - name: Build web
+  #     run:  npm ci
+  #     working-directory: /isolated_build/repo/web
+  #   - name: Run 'npx prettier'
+  #     run:  npx prettier --check .
+  #     working-directory: /isolated_build/repo/web
+  #   - name: Compress files
+  #     run:  |
+  #       GENERATE_SOURCEMAP=false npm run build
+  #       cd build && tar -czvf ../../web_build.tar.gz .
+  #     working-directory: /isolated_build/repo/web
+  #   - uses: actions/upload-artifact@v3.1.1
+  #     if: success()
+  #     with:
+  #       name: "${{ github.job }}"
+  #       retention-days: 7
+  #       path: /isolated_build/repo/web_build.tar.gz
         
 
-  build-server:
-    runs-on: [self-hosted, docker]
-    container:
-      image: python:3.9.1-buster
-    if: |
-      ${{ github.event.pull_request.number }} != null) 
-      || ${{ github.ref }} == $DEV_BRANCH 
-      || ${{ github.ref }} == $STG_BRANCH 
-      || ${{ github.ref }} == $PROD_BRANCH) 
-      || ${{ github.event_name }} == "schedule" 
-      || ${{ github.event_name }} == "web"
-    timeout-minutes: 60
-    services:
-      test_postgres:
-        image: postgres:13.1-alpine
-    env:
-      DOMAIN: example.com
-      SECRET_KEY: test
-      POSTGRES_DB: cbr
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_HOST: test_postgres
-    steps:
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from: $httpsPathWithToken
-        git clone $httpsPathWithToken repo
-    - name: Install dependencies
-      run:  pip install -r requirements.txt
-      working-directory: /isolated_build/repo/server
-    - name: Check spacing
-      run:  python -m black --check .
-      working-directory: /isolated_build/repo/server
-    - name: Run 'manage.py check'
-      run:  python manage.py check
-      working-directory: /isolated_build/repo/server
-    - name: Run Migrations
-      run:  python manage.py makemigrations --check
-      working-directory: /isolated_build/repo/server
-    - name: "TODO: SKIPPING TEST OF 'manage.py test'"
-      run: |
-        echo "::warning file=manage.py,title=SKIPPING TEST::Skipped manage.py test"
-        # python manage.py test
-      working-directory: /isolated_build/repo/server
+  # build-server:
+  #   runs-on: [self-hosted, docker]
+  #   container:
+  #     image: python:3.9.1-buster
+  #   if: |
+  #     ${{ github.event.pull_request.number }} != null) 
+  #     || ${{ github.ref }} == $DEV_BRANCH 
+  #     || ${{ github.ref }} == $STG_BRANCH 
+  #     || ${{ github.ref }} == $PROD_BRANCH) 
+  #     || ${{ github.event_name }} == "schedule" 
+  #     || ${{ github.event_name }} == "web"
+  #   timeout-minutes: 60
+  #   services:
+  #     test_postgres:
+  #       image: postgres:13.1-alpine
+  #   env:
+  #     DOMAIN: example.com
+  #     SECRET_KEY: test
+  #     POSTGRES_DB: cbr
+  #     POSTGRES_USER: test
+  #     POSTGRES_PASSWORD: test
+  #     POSTGRES_HOST: test_postgres
+  #   steps:
+  #   - name: Checkout repo into container
+  #     run: |
+  #       mkdir /isolated_build/ ; cd /isolated_build/
+  #       httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+  #       echo Cloning from: $httpsPathWithToken
+  #       git clone $httpsPathWithToken repo
+  #   - name: Install dependencies
+  #     run:  pip install -r requirements.txt
+  #     working-directory: /isolated_build/repo/server
+  #   - name: Check spacing
+  #     run:  python -m black --check .
+  #     working-directory: /isolated_build/repo/server
+  #   - name: Run 'manage.py check'
+  #     run:  python manage.py check
+  #     working-directory: /isolated_build/repo/server
+  #   - name: Run Migrations
+  #     run:  python manage.py makemigrations --check
+  #     working-directory: /isolated_build/repo/server
+  #   - name: "TODO: SKIPPING TEST OF 'manage.py test'"
+  #     run: |
+  #       echo "::warning file=manage.py,title=SKIPPING TEST::Skipped manage.py test"
+  #       # python manage.py test
+  #     working-directory: /isolated_build/repo/server
 
 
 
@@ -225,35 +225,34 @@ jobs:
 
 
   call_export_image_tag:
+    # Clones and exports the IMAGE_TAG environment variable
+    # Note: To call a workflow module, it must be done as the full job, not as a step in a job.
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     uses: ./.github/workflows/export-image-tag.yml
     with:
       config-path: docker
       
   build-docker-publish-docker-images:
-    needs: [build-common, build-mobile, build-web, build-server, call_export_image_tag]
+    # needs: [build-common, build-mobile, build-web, build-server, call_export_image_tag]
+    needs: [call_export_image_tag]
     runs-on: [self-hosted, docker]
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
     steps:
-    # - name: Checkout repo into container
-    #   run: |
-    #     mkdir /isolated_build/ ; cd /isolated_build/
-    #     httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-    #     echo Cloning from: $httpsPathWithToken
-    #     git clone $httpsPathWithToken repo
+    # UN-NEEDED: Export image tag needs the checked out code, so we have to do it there.
     # - uses: actions/checkout@v3.0.0
     #   with:
     #     fetch-depth: 50
-    # - uses: ./.github/workflows/export-image-tag.yml #@b5cd22688a0294a86f425943b453d7a7b544375f
+
+    # RE-ENABLE THIS (debug only commented out)
+    # - uses: actions/download-artifact@v3.0.1
     #   with:
-    #     config-path: docker
-    - uses: actions/download-artifact@v3.0.1
-      with:
-        name: build-web
+    #     name: build-web
     - run: |
         set -x                  # echo commands names
         ls -al
+        tar -czvf web_build.tar.gz ./caddy/  # DELETE THIS! TESTING ONLY
+
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
         docker images
         docker login -u $HUB_USER -p $HUB_TOKEN
