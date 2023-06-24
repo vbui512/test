@@ -255,7 +255,7 @@ jobs:
         ls -al
         tar -czvf web_build.tar.gz ./caddy/  # DELETE THIS! TESTING ONLY
         
-        export IMAGE_TAG=v$(git show -s --format=%cs ${{ inputs.ci_commit_sha }}).`git rev-parse --short=8 ${{ inputs.ci_commit_sha }}`
+        export IMAGE_TAG=v$(git show -s --format=%cs ${{ github.sha }}).`git rev-parse --short=8 ${{ github.sha }}`
         echo "IMAGE_TAG = '$IMAGE_TAG'"
 
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
