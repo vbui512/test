@@ -224,20 +224,19 @@ jobs:
 
 
 
-  call_export_image_tag:
-    # Clones and exports the IMAGE_TAG environment variable
-    # Note: To call a reuse-workflow, it must be done as the full job, not as a step in a job.
-    # https://docs.github.com/en/actions/using-workflows/reusing-workflows
-    if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
-    uses: ./.github/workflows/export-image-tag.yml
-    with:
-      runner_tag: docker
-      ci_commit_sha: ${{ github.sha }}
-    secrets: inherit
+  # call_export_image_tag:
+  #   # Clones and exports the IMAGE_TAG environment variable
+  #   # Note: To call a reuse-workflow, it must be done as the full job, not as a step in a job.
+  #   # https://docs.github.com/en/actions/using-workflows/reusing-workflows
+  #   if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
+  #   uses: ./.github/workflows/export-image-tag.yml
+  #   with:
+  #     runner_tag: docker
+  #     ci_commit_sha: ${{ github.sha }}
+  #   secrets: inherit
       
   build-docker-publish-docker-images:
     # needs: [build-common, build-mobile, build-web, build-server, call_export_image_tag]
-    needs: [call_export_image_tag]
     runs-on: [self-hosted, docker]
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
@@ -253,9 +252,11 @@ jobs:
     #     name: build-web
     - run: |
         set -x                  # echo commands names
-        echo "IMAGE_TAG set by reusable workflow: '$IMAGE_TAG'"
         ls -al
         tar -czvf web_build.tar.gz ./caddy/  # DELETE THIS! TESTING ONLY
+        
+        export IMAGE_TAG=v$(git show -s --format=%cs ${{ inputs.ci_commit_sha }}).`git rev-parse --short=8 ${{ inputs.ci_commit_sha }}`
+        echo "IMAGE_TAG = '$IMAGE_TAG'"
 
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
         docker images
