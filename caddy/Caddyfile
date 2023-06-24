@@ -1,4 +1,4 @@
-{$DOMAIN} {
+{example.com} {
     encode gzip
 
     header {
