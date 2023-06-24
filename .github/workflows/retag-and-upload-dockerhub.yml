@@ -3,7 +3,13 @@ name: retag-and-upload-dockerhub
 on:
   workflow_call:
     inputs:
-      config-path:
+      runner_tag:
+        required: true
+        type: string
+      IMAGE_TAG:
+        required: true
+        type: string
+      BRANCH_TAG:
         required: true
         type: string
     secrets:
@@ -15,14 +21,11 @@ env:
   HUB_TOKEN: "${{ secrets.HUB_TOKEN }}"
   HUB_USER: "${{ secrets.HUB_USER }}"
 jobs:
-  call-export-image:
-    uses: vbui512/test/.github/workflows/export-image-tag.yml@b5cd22688a0294a86f425943b453d7a7b544375f
-    with:
-      config-path: '${{ inputs.config-path }}'
   retag-and-upload-dockerhub:
-    runs-on: [self-hosted, '${{ inputs.config-path }}']
+    runs-on: [self-hosted, '${{ runner_tag }}']
     steps:
-    - run: |
+    - name: Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'
+      run: |
         echo "Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'"
         | 
         echo "If you get 'Error response from daemon - manifest for ... not found - manifest unknown - manifest unknown'"
