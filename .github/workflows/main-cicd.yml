@@ -309,21 +309,6 @@ jobs:
 
 
 
-
-  # deploy-development-pre-script:
-  #   needs: [build-docker-publish-docker-images]
-  #   runs-on: [self-hosted, docker]
-  #   if: ${{ github.ref }} == $DEV_BRANCH
-  #   environment:
-  #     name: development
-  #     url: https://cbr-dev.cmpt.sfu.ca
-  #   timeout-minutes: 60
-  #   env:
-  #     BRANCH_TAG: dev
-  #   steps:
-  #   - run: echo "IMAGE_TAG = '$IMAGE_TAG'"
-
-    
     
   # dev-server-deploy-from-dockerhub:
   #   needs: [build-docker-publish-docker-images]
@@ -338,30 +323,30 @@ jobs:
   #   uses: ./.github/workflows/deploy-from-dockerhub.yml
   #     with:
   #       config-path: deploy-development
-  
-  # dev-retag-and-upload-to-dockerhub:
-  #   # needs: [build-docker-publish-docker-images, export-image-tag]
-  #   runs-on: [self-hosted, docker]
-  #   # if: ${{ github.ref }} == $DEV_BRANCH
-  #   # environment:
-  #   #   name: development
-  #   #   url: https://cbr-dev.cmpt.sfu.ca
-  #   # timeout-minutes: 60
-  #   # env:
-  #   #   BRANCH_TAG: dev
-  #   #   IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
-  #   uses: ./.github/workflows/retag-and-upload-dockerhub.yml
-  #   with:
-  #     IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
+
+  # dev-server-deploy-from-dockerhub:
+  #   needs: [build-docker-publish-docker-images]
+  #   runs-on: [self-hosted, deploy-development]
+  #   if: ${{ github.ref }} == $DEV_BRANCH
+  #   environment:
+  #     name: development
+  #     url: https://cbr-dev.cmpt.sfu.ca
+  #   timeout-minutes: 60
+  #   env:
   #     BRANCH_TAG: dev
-  #   secrets: inherit
+  #   uses: ./.github/workflows/deploy-from-dockerhub.yml
+  #     with:
+  #       runner_name: deploy-development
+
+
+
 
   dev-retag-and-upload-to-dockerhub:
     # Note: Since we are calling a reusable workflow, we cannot have
     # this job use 'timeout-minutes' or 'environment' or 'env' because
     # those break the allowable syntax for a job calling a reusable workflow.
-    # needs: [build-docker-publish-docker-images, export-image-tag]
-    needs: [export-image-tag]
+    needs: [build-docker-publish-docker-images, export-image-tag]
+    # needs: [export-image-tag]
     if: ${{ github.ref }} == $DEV_BRANCH
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
     with:

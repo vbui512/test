@@ -3,7 +3,7 @@ name: deploy-from-dockerhub
 on:
   workflow_call:
     inputs:
-      config-path:
+      runner_name:
         required: true
         type: string
     secrets:
@@ -15,12 +15,8 @@ env:
   HUB_TOKEN: "${{ secrets.HUB_TOKEN }}"
   HUB_USER: "${{ secrets.HUB_USER }}"
 jobs:
-  call-export-image:
-    uses: vbui512/test/.github/workflows/export-image-tag.yml@b5cd22688a0294a86f425943b453d7a7b544375f
-    with:
-      config-path: '${{ inputs.config-path }}'
   deploy-from-dockerhub:
-    runs-on: [self-hosted, '${{ inputs.config-path }}']
+    runs-on: [self-hosted, '${{ inputs.runner_name }}']
     steps:
     -  run: |
         cp /var/cbr/.env ./.env
