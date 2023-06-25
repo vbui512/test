@@ -25,6 +25,7 @@ env:
   HUB_USER: "${{ secrets.HUB_USER }}"
 jobs:
   retag-and-upload-dockerhub:
+    runs-on: [self-hosted, docker]
     steps:
     - name: Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'
       run: |
