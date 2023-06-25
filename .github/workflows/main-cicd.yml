@@ -365,12 +365,13 @@ jobs:
       BRANCH_TAG: dev
     secrets: inherit
 
-  small-test2:
-    uses: ./.github/workflows/BADFILE.yml
-    with:
-      IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
-      BRANCH_TAG: dev
-    secrets: inherit
+  # YES: GitHub detects that the file does not exist.
+  # small-test2:
+  #   uses: ./.github/workflows/BADFILE.yml
+  #   with:
+  #     IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
+  #     BRANCH_TAG: dev
+  #   secrets: inherit
 
   small-test3:
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
