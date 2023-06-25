@@ -341,22 +341,22 @@ jobs:
   #     with:
   #       config-path: deploy-development
   
-  dev-retag-and-upload-to-dockerhub:
-    # needs: [build-docker-publish-docker-images, export-image-tag]
-    runs-on: [self-hosted, docker]
-    # if: ${{ github.ref }} == $DEV_BRANCH
-    # environment:
-    #   name: development
-    #   url: https://cbr-dev.cmpt.sfu.ca
-    # timeout-minutes: 60
-    # env:
-    #   BRANCH_TAG: dev
-    #   IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
-    uses: ./.github/workflows/retag-and-upload-dockerhub.yml
-    with:
-      IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
-      BRANCH_TAG: dev
-    secrets: inherit
+  # dev-retag-and-upload-to-dockerhub:
+  #   # needs: [build-docker-publish-docker-images, export-image-tag]
+  #   runs-on: [self-hosted, docker]
+  #   # if: ${{ github.ref }} == $DEV_BRANCH
+  #   # environment:
+  #   #   name: development
+  #   #   url: https://cbr-dev.cmpt.sfu.ca
+  #   # timeout-minutes: 60
+  #   # env:
+  #   #   BRANCH_TAG: dev
+  #   #   IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
+  #   uses: ./.github/workflows/retag-and-upload-dockerhub.yml
+  #   with:
+  #     IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
+  #     BRANCH_TAG: dev
+  #   secrets: inherit
       
   small-test1:
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
