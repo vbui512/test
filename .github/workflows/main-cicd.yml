@@ -367,13 +367,23 @@ jobs:
     secrets: inherit
 
 
-  get-all-correct-info:
+  # ERROR:
+  #  The workflow is not valid. .github/workflows/main-cicd.yml (Line: 374, Col: 5): Unexpected value 'uses' .github/workflows/main-cicd.yml (Line: 375, Col: 5): Unexpected value 'with'
+  # get-all-correct-info:
+  #   needs: [export-image-tag]
+  #   env:
+  #     IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
+  #   uses: ./.github/workflows/retag-and-upload-dockerhub.yml
+  #   with:
+  #     IMAGE_TAG:  $IMAGE_TAG
+  #     BRANCH_TAG: dev
+  #   secrets: inherit
+
+  just-with-needs:
     needs: [export-image-tag]
-    env:
-      IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
     with:
-      IMAGE_TAG:  $IMAGE_TAG
+      IMAGE_TAG:  ${{ needs.export-image-tag.outputs.image_tag}}
       BRANCH_TAG: dev
     secrets: inherit
 
