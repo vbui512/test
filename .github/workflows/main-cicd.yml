@@ -358,6 +358,33 @@ jobs:
       BRANCH_TAG: dev
     secrets: inherit
       
+  small-test1:
+    uses: ./.github/workflows/retag-and-upload-dockerhub.yml
+    with:
+      IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
+      BRANCH_TAG: dev
+    secrets: inherit
+
+  small-test2:
+    uses: ./.github/workflows/BADFILE.yml
+    with:
+      IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
+      BRANCH_TAG: dev
+    secrets: inherit
+
+  small-test3:
+    uses: ./.github/workflows/retag-and-upload-dockerhub.yml
+
+  small-test4:
+    uses: ./.github/workflows/retag-and-upload-dockerhub.yml
+    with:
+      IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
+      BRANCH_TAG: dev
+    secrets: inherit
+
+  small-test5:
+    uses: ./.github/workflows/retag-and-upload-dockerhub.yml
+    secrets: inherit
 
 
 
