@@ -360,9 +360,9 @@ jobs:
     # needs: [build-docker-publish-docker-images, export-image-tag]
     needs: [export-image-tag]
     if: ${{ github.ref }} == $DEV_BRANCH
-    # environment:
-    #   name: development
-    #   url: https://cbr-dev.cmpt.sfu.ca
+    environment:
+      name: development
+      url: https://cbr-dev.cmpt.sfu.ca
     # timeout-minutes: 60  # ERROR Causes The workflow is not valid. .github/workflows/main-cicd.yml (Line: 367, Col: 5): Unexpected value 'uses' .github/workflows/main-cicd.yml (Line: 368, Col: 5): Unexpected value 'with'
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
     with:
