@@ -357,13 +357,26 @@ jobs:
   #     IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
   #     BRANCH_TAG: dev
   #   secrets: inherit
-      
-  small-test1:
+
+
+  working-version:
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
     with:
       IMAGE_TAG:  Da-Image-Tag-Here #$IMAGE_TAG
       BRANCH_TAG: dev
     secrets: inherit
+
+
+  get-all-correct-info:
+    needs: [export-image-tag]
+    env:
+      IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
+    uses: ./.github/workflows/retag-and-upload-dockerhub.yml
+    with:
+      IMAGE_TAG:  $IMAGE_TAG
+      BRANCH_TAG: dev
+    secrets: inherit
+
 
   # YES: GitHub detects that the file does not exist.
   # small-test2:
