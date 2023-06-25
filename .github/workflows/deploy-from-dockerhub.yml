@@ -6,6 +6,7 @@ on:
       runner_name:
         required: true
         type: string
+      
     secrets:
       envPAT:
         required: false
@@ -17,8 +18,10 @@ env:
 jobs:
   deploy-from-dockerhub:
     runs-on: [self-hosted, '${{ inputs.runner_name }}']
+    timeout-minutes: 60
     steps:
     -  run: |
+        git pull
         cp /var/cbr/.env ./.env
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml pull
         docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d

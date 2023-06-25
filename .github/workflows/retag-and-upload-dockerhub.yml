@@ -26,6 +26,7 @@ env:
 jobs:
   retag-and-upload-dockerhub:
     runs-on: [self-hosted, docker]
+    timeout-minutes: 60
     steps:
     - name: Trying to tag images of version '${{ inputs.IMAGE_TAG }}' with new tag '${{ inputs.BRANCH_TAG }}'
       run: |
