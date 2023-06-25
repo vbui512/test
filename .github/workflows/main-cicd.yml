@@ -363,7 +363,7 @@ jobs:
     # environment:
     #   name: development
     #   url: https://cbr-dev.cmpt.sfu.ca
-    timeout-minutes: 60
+    # timeout-minutes: 60  # ERROR Causes The workflow is not valid. .github/workflows/main-cicd.yml (Line: 367, Col: 5): Unexpected value 'uses' .github/workflows/main-cicd.yml (Line: 368, Col: 5): Unexpected value 'with'
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
     with:
       IMAGE_TAG:  ${{ needs.export-image-tag.outputs.image_tag}}
