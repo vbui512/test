@@ -254,8 +254,8 @@ jobs:
 
       
   build-docker-publish-docker-images:
-    # needs: [build-common, build-mobile, build-web, build-server, export-image-tag]
-    needs: [export-image-tag]
+    needs: [build-common, build-mobile, build-web, build-server, export-image-tag]
+    # needs: [export-image-tag]
     runs-on: [self-hosted, docker]
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
