@@ -30,7 +30,6 @@ jobs:
     - name: Trying to tag images of version '${{ inputs.IMAGE_TAG }}' with new tag '${{ inputs.BRANCH_TAG }}'
       run: |
         echo "Trying to tag images of version '${{ inputs.IMAGE_TAG }}' with new tag '${{ inputs.BRANCH_TAG }}'"
-        | 
         echo "If you get 'Error response from daemon - manifest for ... not found - manifest unknown - manifest unknown'"
         echo "   it likely means the pipeline did not build and deploy a docker image for this commit."
         echo "   Was there a MR to this branch that did not get build for use on Dev server?"
