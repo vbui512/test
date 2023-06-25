@@ -359,7 +359,7 @@ jobs:
   dev-retag-and-upload-to-dockerhub:
     # needs: [build-docker-publish-docker-images, export-image-tag]
     needs: [export-image-tag]
-    if: ${{ github.ref }} == $DEV_BRANCH
+    # if: ${{ github.ref }} == $DEV_BRANCH
     # environment:
     #   name: development
     #   url: https://cbr-dev.cmpt.sfu.ca
