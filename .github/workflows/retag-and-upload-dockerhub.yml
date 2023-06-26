@@ -17,7 +17,7 @@ on:
       HUB_TOKEN:
         required: true
       HUB_USER:
-        required: tru
+        required: true
 env:
   HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
   HUB_REPO_FRONTEND: "${{ secrets.HUB_REPO_FRONTEND }}"
