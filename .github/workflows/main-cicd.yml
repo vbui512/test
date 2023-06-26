@@ -325,6 +325,7 @@ jobs:
     with:
       runner_name: deploy-development
       domain:      https://cbr-dev.cmpt.sfu.ca
+      IMAGE_TAG:   ${{ needs.export-image-tag.outputs.image_tag }}
     secrets: inherit
 
 

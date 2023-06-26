@@ -9,22 +9,20 @@ on:
       domain:
         required: true
         type: string
+      IMAGE_TAG:
+        required: true
+        type: string
       
     secrets:
       HUB_REPO_BACKEND:
         required: true
       HUB_REPO_FRONTEND:
         required: true
-      HUB_TOKEN:
-        required: true
-      HUB_USER:
-        required: true
 env:
   HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
   HUB_REPO_FRONTEND: "${{ secrets.HUB_REPO_FRONTEND }}"
-  HUB_TOKEN: "${{ secrets.HUB_TOKEN }}"
-  HUB_USER: "${{ secrets.HUB_USER }}"
-  DOMAIN:   "${{ inputs.domain }}"
+  DOMAIN:    "${{ inputs.domain }}"
+  IMAGE_TAG: "${{ inputs.IMAGE_TAG }}"
 jobs:
   deploy-from-dockerhub:
     runs-on: [self-hosted, '${{ inputs.runner_name }}']
