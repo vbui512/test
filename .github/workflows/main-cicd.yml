@@ -90,7 +90,8 @@ jobs:
         echo "Cloning from     '$httpsPathWithToken'"
         git clone --depth $CLONE_DEPTH $httpsPathWithToken repo
         echo "Checking out SHA '${{ github.sha }}'"
-        echo "(ref '${{ github.ref }}', which is branch '${{ github.ref_name }}')"
+        echo "(This is ref     '${{ github.ref }}', which is branch '${{ github.ref_name }}')"
+        cd repo
         git checkout ${{ github.sha }}
     - name: Install NPM globally & Run 'npm ci'
       run:  |
