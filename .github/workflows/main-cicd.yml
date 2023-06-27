@@ -82,9 +82,9 @@ jobs:
         echo "Cloning from '$httpsPathWithToken'"
         git clone --depth $CLONE_DEPTH $httpsPathWithToken repo
         echo "Checking out ref '${{ github.ref }}', which is branch '${{ github.ref_name }}'"
-        echo "This is SHA '${{ github.sha }}'"
         cd repo
         git checkout ${{ github.ref_name }}
+        echo "Resetting to SHA '${{ github.sha }}'"
         git reset --hard ${{ github.sha }}
     - name: Install NPM globally & Run 'npm ci'
       run:  |
