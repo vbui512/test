@@ -211,7 +211,7 @@ jobs:
     - name: Run 'manage.py check'
       run:  python manage.py check
       working-directory: /isolated_build/repo/server
-    - name: Run Migrations
+    - name: Make migrations
       run:  python manage.py makemigrations --check
       working-directory: /isolated_build/repo/server
     - name: "TODO: SKIPPING TEST OF 'manage.py test'"
@@ -242,8 +242,8 @@ jobs:
 
       
   build-docker-publish-docker-images:
-    # needs: [build-common, build-mobile, build-web, build-server, export-image-tag]
-    needs: [export-image-tag]
+    needs: [build-common, build-mobile, build-web, build-server, export-image-tag]
+    # needs: [export-image-tag]   # Used for faking and testing
     runs-on: [self-hosted, docker]
     if: ${{ github.ref }} == $DEV_BRANCH || ${{ github.event_name }} == "web"
     timeout-minutes: 60
@@ -313,18 +313,20 @@ jobs:
   #       config-path: deploy-development
 
   dev-server-deploy-from-dockerhub:
+    # Note: Since we are calling a reusable workflow, we cannot have
+    # this job use 'timeout-minutes' or 'environment' or 'env' because
+    # those break the allowable syntax for a job calling a reusable workflow.
+    # https://docs.github.com/en/actions/using-workflows/reusing-workflows
     needs: [build-docker-publish-docker-images, export-image-tag]
     if: ${{ github.ref }} == $DEV_BRANCH
     # TODO: What do we need the environment for?
     # environment:
     #   name: development
     #   url: https://cbr-dev.cmpt.sfu.ca
-    # env:
-    #   BRANCH_TAG: dev
     uses: ./.github/workflows/deploy-from-dockerhub.yml
     with:
       runner_name: deploy-development
-      domain:      https://cbr-dev.cmpt.sfu.ca
+      domain:      cbr-dev.cmpt.sfu.ca
       IMAGE_TAG:   ${{ needs.export-image-tag.outputs.image_tag }}
     secrets: inherit
 
