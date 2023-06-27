@@ -8,6 +8,7 @@ COLOR_OFF='\033[0m'
 # exit if there is a failed command
 set -e
 
+
 echo -e "${BLUE}"
 echo -e "Hope Health Action - Community Based Rehabilitation: Update Script"
 echo -e "This script must be run as root or with sudo. It is only supported on Ubuntu Server 22.04."
