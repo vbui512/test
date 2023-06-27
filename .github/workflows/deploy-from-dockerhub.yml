@@ -54,3 +54,5 @@ jobs:
         docker images
         docker ps -a
         docker volume ls
+        echo "::notice file=deploy-form-dockerhub.yml::Deployed image $IMAGE_TAG to $DOMAIN using runner ${{ inputs.runner_name}}"
+
