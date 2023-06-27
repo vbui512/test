@@ -87,10 +87,10 @@ jobs:
       run: |
         mkdir /isolated_build/ ; cd /isolated_build/
         httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo Cloning from     '$httpsPathWithToken'
-        echo Checking out SHA '${{ github.sha }}'
-        echo (ref '${{ github.ref }}', which is branch '${{ github.ref_name }})'
+        echo "Cloning from     '$httpsPathWithToken'"
         git clone --depth $CLONE_DEPTH $httpsPathWithToken repo
+        echo "Checking out SHA '${{ github.sha }}'"
+        echo "(ref '${{ github.ref }}', which is branch '${{ github.ref_name }}')"
         git checkout ${{ github.sha }}
     - name: Install NPM globally & Run 'npm ci'
       run:  |
