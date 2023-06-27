@@ -84,7 +84,7 @@ jobs:
         echo "Checking out ref '${{ github.ref }}', which is branch '${{ github.ref_name }}'"
         echo "This is SHA '${{ github.sha }}'"
         cd repo
-        git switch ${{ github.ref_name }}
+        git branch ${{ github.ref_name }}
         git reset --hard ${{ github.sha }}
     - name: Install NPM globally & Run 'npm ci'
       run:  |
