@@ -11,6 +11,7 @@ on:
     branches: [ main, staging ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 env:
   HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
   HUB_REPO_FRONTEND: "${{ secrets.HUB_REPO_FRONTEND }}"
