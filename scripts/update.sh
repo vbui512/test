@@ -5,6 +5,7 @@ RED='\033[1;31m'
 BLUE='\033[1;36m'
 COLOR_OFF='\033[0m'
 
+
 # exit if there is a failed command
 set -e
 
