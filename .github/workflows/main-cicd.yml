@@ -58,27 +58,14 @@ jobs:
 
   build-info:
     runs-on: [self-hosted, docker]
-    container:
-      image: node:14
     if: ${{ github.event_name }} != "push"
     timeout-minutes: 60
     steps:
-    - name: Checkout repo into container
-      run: |
-        mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo "Cloning from '$httpsPathWithToken'"
-        git clone --depth $CLONE_DEPTH $httpsPathWithToken repo
-        echo "Checking out SHA '${{ github.sha }}'"
-        echo "(This is ref '${{ github.ref }}', which is branch '${{ github.ref_name }}')"
-        cd repo
-        git checkout ${{ github.sha }}
-  
-      - run: |
-          echo "This task give the CI/CD pipeline something to (almost always) run."
-          echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-          echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-          echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+    - run: |
+        echo "This task give the CI/CD pipeline something to (almost always) run."
+        echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
+        echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
+        echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
         
   build-common:
     runs-on: [self-hosted, docker]
