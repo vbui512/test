@@ -1,12 +1,14 @@
 name: deploy-from-dockerhub
+# Reusable workflow for deploying to the dev or stg servers.
+# Called by the main CI/CD pipeline .yml file as needed.
 
 on:
   workflow_call:
     inputs:
-      runner_name:
+        RUNNER_NAME:
         required: true
         type: string
-      domain:
+      DOMAIN:
         required: true
         type: string
       IMAGE_TAG:
@@ -21,11 +23,11 @@ on:
 env:
   HUB_REPO_BACKEND: "${{ secrets.HUB_REPO_BACKEND }}"
   HUB_REPO_FRONTEND: "${{ secrets.HUB_REPO_FRONTEND }}"
-  DOMAIN:    "${{ inputs.domain }}"
+  DOMAIN:    "${{ inputs.DOMAIN }}"
   IMAGE_TAG: "${{ inputs.IMAGE_TAG }}"
 jobs:
   deploy-from-dockerhub:
-    runs-on: [self-hosted, '${{ inputs.runner_name }}']
+    runs-on: [self-hosted, '${{ inputs.RUNNER_NAME }}']
     timeout-minutes: 60
     steps:
     - name: Checkout this code

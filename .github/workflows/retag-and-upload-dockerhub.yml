@@ -1,4 +1,6 @@
 name: retag-and-upload-dockerhub
+# Reusable workflow for retagging an existing dockerhub image with a new name.
+# Called by the main CI/CD pipeline .yml file as needed.
 
 on:
   workflow_call:
