@@ -111,6 +111,7 @@ build web:
     paths:
       - web_build.tar.gz
 
+
 build server:
   stage: build
   image: python:3.9.1-buster
