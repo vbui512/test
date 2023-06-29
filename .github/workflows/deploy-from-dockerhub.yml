@@ -5,7 +5,7 @@ name: deploy-from-dockerhub
 on:
   workflow_call:
     inputs:
-        RUNNER_NAME:
+      RUNNER_NAME:
         required: true
         type: string
       DOMAIN:
