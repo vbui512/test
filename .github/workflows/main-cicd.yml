@@ -19,9 +19,6 @@ env:
   HUB_REPO_FRONTEND: "${{ secrets.HUB_REPO_FRONTEND }}"
   HUB_TOKEN: "${{ secrets.HUB_TOKEN }}"
   HUB_USER: "${{ secrets.HUB_USER }}"
-  DEV_BRANCH: main
-  STG_BRANCH: staging
-  PROD_BRANCH: production
   NPM_VERSION: 7.19.0
   CLONE_DEPTH: 50
   # Keep npm's cache out of home directory (mounted from host)
@@ -278,7 +275,7 @@ jobs:
     needs: [build-common, build-mobile, build-web, build-server, export-image-tag]
     # needs: [export-image-tag]   # Used for faking and testing
     runs-on: [self-hosted, docker]
-    if: ${{ github.ref_name == 'main' }} || ${{ github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.ref_name == 'main' }}
     timeout-minutes: 60
     env:
       IMAGE_TAG: ${{ needs.export-image-tag.outputs.image_tag}}
