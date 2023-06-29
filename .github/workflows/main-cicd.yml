@@ -1,5 +1,7 @@
 name: 415-hha_cbr/cbr-platform
 
+# TODO: Figure out how to pull a MR branch from the path spec.
+
 # Main GitHub CI/CD pipeline definition file
 # For syntax, see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 #
@@ -77,13 +79,29 @@ jobs:
     steps:
     - name: Checkout repo into container
       run: |
+        # Test with:
+        #  > docker run -it node:14 /bin/bash 
+        #  > mkdir /isolated_build/; cd /isolated_build
+        #  > git clone https://github.com/vbui512/test.git repo
+        #  > cd repo
+        # For PR:    .ref       = "refs/pull/3/merge"   .ref_name  = "3/merge" 
+        #  > git fetch origin pull/3/merge:my_local_test_branch
+        # For main:  .ref       = "refs/heads/main"     .ref_name  = "main"
+        #  > git fetch origin refs/heads/main
+        #     or for just main use:     git checkout remotes/origin/${{ github.ref_name }}
+
         mkdir /isolated_build/ ; cd /isolated_build/
-        httpsPathWithToken=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
-        echo "Cloning from '$httpsPathWithToken'"
-        git clone $httpsPathWithToken repo
-        echo "Checking out ref '${{ github.ref }}', which is branch '${{ github.ref_name }}'"
+        HTTPS_PATH_WITH_TOKEN=`echo ${{github.repositoryUrl}} | awk '{ gsub(/git:\/\//, "\n" ); print "https://${{github.token}}@" $1; }'`
+        echo "Cloning from '$HTTPS_PATH_WITH_TOKEN'"
+        git clone $HTTPS_PATH_WITH_TOKEN repo
         cd repo
-        git checkout remotes/origin/${{ github.ref_name }}
+
+        # Name a new branch after the ref-spec we were given (stripping off leading 'refs/')
+        export FETCH_REF=`echo ${{github.ref}} | cut -c 6-`
+        echo "Checking out ref '${{ github.ref }}', which is branch '${{ github.ref_name }}' using refspec '$FETCH_REF'"        
+        git fetch origin $FETCH_REF
+        git checkout my_local_test_branch
+
         echo "Resetting to SHA '${{ github.sha }}'"
         git reset --hard ${{ github.sha }}
     - name: Install NPM globally & Run 'npm ci'
