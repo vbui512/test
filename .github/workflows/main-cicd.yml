@@ -98,7 +98,7 @@ jobs:
 
         # Name a new branch after the ref-spec we were given (stripping off leading 'refs/')
         export FETCH_REF=`echo ${{github.ref}} | cut -c 6-`
-        echo "Checking out ref '${{ github.ref }}', which is branch '${{ github.ref_name }}' using refspec '$FETCH_REF'"        
+        echo "Fetching ref '${{ github.ref }}', which is branch '${{ github.ref_name }}' using refspec '$FETCH_REF'"        
         git fetch origin $FETCH_REF:my_build_branch
         git checkout my_build_branch
 
