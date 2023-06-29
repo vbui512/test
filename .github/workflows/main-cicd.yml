@@ -60,28 +60,6 @@ jobs:
           MATRIX_CONTEXT: ${{ toJson(matrix) }}
         run: echo '$MATRIX_CONTEXT'
 
-  test_always_runs:
-    runs-on: ubuntu-latest
-    steps:
-    - run: echo "Running!"
-  test_branch_is_main:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'main' }}
-    steps:
-    - run: echo "Running!"
-  test_branch_is_staging:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'staging' }}
-    steps:
-    - run: echo "Running!"      
-  test_branch_is_main_or_dispatch:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'main' }} || ${{ github.event_name == 'workflow_dispatch' }}
-    steps:
-    - run: echo "Running!"      
-
-
-
   build-common:
     runs-on: [self-hosted, docker]
     container:
