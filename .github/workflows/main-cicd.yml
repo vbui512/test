@@ -32,9 +32,12 @@ jobs:
     steps:
       - name: Display commonly used info
         run: |
-          echo "  CI_PIPELINE_SOURCE  = ${{ github.event_name }}"
-          echo "  CI_MERGE_REQUEST_ID = ${{ github.event.pull_request.number }}"
-          echo "  CI_COMMIT_BRANCH    = ${{ github.ref }}"
+          echo "  CI/CD Event Name  = ${{ github.event_name }}"
+          echo "  PR request Number = ${{ github.event.pull_request.number }}"
+          echo "  Refspec           = ${{ github.ref }}"
+          echo "  Branch name       = ${{ github.ref_name }}"
+          echo "  Commit SHA        = ${{ github.sha }}"
+
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -327,7 +330,7 @@ jobs:
 
   # Staging (stg) server
   staging-server-deploy-from-dockerhub:
-    needs: [build-docker-publish-docker-images, export-image-tag]
+    needs: [export-image-tag]
     if: ${{ github.ref_name == 'staging' }}
     uses: ./.github/workflows/deploy-from-dockerhub.yml
     with:
@@ -337,7 +340,7 @@ jobs:
     secrets: inherit
 
   staging-retag-and-upload-to-dockerhub:
-    needs: [build-docker-publish-docker-images, export-image-tag]
+    needs: [export-image-tag]
     if: ${{ github.ref_name == 'staging' }}
     uses: ./.github/workflows/retag-and-upload-dockerhub.yml
     with:
